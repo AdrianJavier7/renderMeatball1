@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PerfilService {
+public class PerfilService implements IPerfilService {
 
     @Autowired
     private PerfilRepository perfilRepository;

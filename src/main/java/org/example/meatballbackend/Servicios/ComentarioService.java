@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ComentarioService {
+public class ComentarioService implements IComentarioService {
 
     @Autowired
     private ComentarioRepository comentarioRepository;

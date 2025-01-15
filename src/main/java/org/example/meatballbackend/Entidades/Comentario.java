@@ -29,5 +29,4 @@ public class Comentario {
     @JoinColumn(name = "id_publicacion", referencedColumnName = "id")
     private Publicacion publicacion;
 
-
 }

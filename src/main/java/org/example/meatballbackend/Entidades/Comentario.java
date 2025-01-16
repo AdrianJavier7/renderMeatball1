@@ -33,5 +33,4 @@ public class Comentario {
     @OneToOne
     @JoinColumn(name = "id_publicacion", referencedColumnName = "id")
     private Publicacion publicacion;
-
 }

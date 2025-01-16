@@ -4,6 +4,7 @@ package org.example.meatballbackend.Entidades;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.meatballbackend.Enums.Dificultad;
+import org.example.meatballbackend.Enums.Estado;
 
 import java.util.List;
 
@@ -47,25 +48,9 @@ public class Publicacion {
     @Column(name = "raciones")
     private int raciones;
 
-    @ManyToMany
-    @JoinTable(
-            name = "Publicacion_Ingrediente",
-            schema = "meatball",
-            catalog = "postgres",
-            joinColumns = @JoinColumn(name = "publicacion_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "ingrediente_id", referencedColumnName = "id")
-    )
-    private List<Ingrediente> ingredientes;
-
-    @ManyToMany
-    @JoinTable(
-            name = "Publicacion_Etiqueta",
-            schema = "meatball",
-            catalog = "postgres",
-            joinColumns = @JoinColumn(name = "publicacion_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "Etiqueta_id", referencedColumnName = "id")
-    )
-    private List<Etiqueta> etiquetas;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado")
+    private Estado estado;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, targetEntity = Usuario.class)
     @JoinColumn(name = "usuario_id", referencedColumnName = "id")

@@ -3,6 +3,8 @@ package org.example.meatballbackend.Entidades;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "Comentario", schema = "meatball" , catalog = "postgres")
 @Getter
@@ -20,6 +22,9 @@ public class Comentario {
 
     @Column(name = "comentario")
     private String comentario;
+
+    @Column(name = "fecha")
+    private LocalDateTime fecha;
 
     @OneToOne
     @JoinColumn(name = "id_usuario", referencedColumnName = "id")

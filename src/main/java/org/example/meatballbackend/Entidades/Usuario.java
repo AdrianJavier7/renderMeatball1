@@ -2,6 +2,7 @@ package org.example.meatballbackend.Entidades;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.meatballbackend.Enums.Estado;
 import org.example.meatballbackend.Enums.Rol;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,6 +34,10 @@ public class Usuario implements UserDetails {
     @Column(name = "rol")
     @Enumerated(EnumType.STRING)
     private Rol rol;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado")
+    private Estado estado;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -57,4 +57,12 @@ public class Publicacion {
     private Usuario usuario;
 
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "Usuario_Like"
+            )
+    private List<Usuario> usuarios;
+
+
+
 }

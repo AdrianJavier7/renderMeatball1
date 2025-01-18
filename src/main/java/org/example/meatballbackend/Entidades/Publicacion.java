@@ -62,7 +62,4 @@ public class Publicacion {
             name = "Usuario_Like"
             )
     private List<Usuario> usuarios;
-
-
-
 }

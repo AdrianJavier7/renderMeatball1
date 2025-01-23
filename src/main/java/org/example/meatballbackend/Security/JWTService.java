@@ -11,6 +11,7 @@ import org.example.meatballbackend.Servicios.PerfilService;
 import org.example.meatballbackend.Servicios.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -25,6 +26,7 @@ public class JWTService {
     private String secretKey;
 
     @Autowired
+    @Lazy
     private UsuarioService usuarioService;
 
     @Autowired

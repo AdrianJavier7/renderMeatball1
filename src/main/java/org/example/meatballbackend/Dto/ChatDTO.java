@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ChatDTO {
-    private Integer id;
+    private Integer idRemitente;
+    private Integer idEmisor;
     private String mensaje;
 }

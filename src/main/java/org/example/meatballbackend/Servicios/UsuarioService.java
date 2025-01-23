@@ -68,7 +68,7 @@ public class UsuarioService implements UserDetailsService {
 
             if (passwordEncoder.matches(dto.getPassword(), usuario.getPassword())) {
 
-                String token = jwtService.generateToken(usuario);
+                  String token = jwtService.generateToken(usuario);
                 return ResponseEntity
                         .ok(RespuestaDTO
                                 .builder()

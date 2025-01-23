@@ -5,7 +5,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.example.meatballbackend.Entidades.Perfil;
 import org.example.meatballbackend.Entidades.Usuario;
+import org.example.meatballbackend.Servicios.PerfilService;
+import org.example.meatballbackend.Servicios.UsuarioService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +23,12 @@ public class JWTService {
 
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;
+
+    @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private PerfilService perfilService;
 
     public String generateToken(Usuario usuario){
         TokenDataDTO tokenDataDTO = TokenDataDTO
@@ -35,6 +45,15 @@ public class JWTService {
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
+
+    public Perfil extraerPerfilToken(String token){
+        String tokenSinCabecera = token.substring(7);
+        TokenDataDTO tokenDataDTO = extractTokenData(tokenSinCabecera);
+        Usuario usuarioLogueado = (Usuario) usuarioService.loadUserByUsername(tokenDataDTO.getUsername());
+        return perfilService.buscarPorUsuario(usuarioLogueado);
+
+    }
+
 
     private Claims extractDatosToken(String token){
         return Jwts

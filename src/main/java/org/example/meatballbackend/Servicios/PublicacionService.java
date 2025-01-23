@@ -1,5 +1,7 @@
 package org.example.meatballbackend.Servicios;
 
+import org.example.meatballbackend.Dto.PublicacionDTO;
+import org.example.meatballbackend.Entidades.Perfil;
 import org.example.meatballbackend.Entidades.Publicacion;
 import org.example.meatballbackend.Entidades.Usuario;
 import org.example.meatballbackend.Enums.Rol;
@@ -8,6 +10,7 @@ import org.example.meatballbackend.Repositorios.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,18 +29,17 @@ public class PublicacionService implements IPublicacionService {
         return publicacionRepository.save(publicacion);
     }
 
-    // Obtener todas las publicaciones que hay
     @Override
     public List<Publicacion> obtenerPublicaciones() {
         return publicacionRepository.findAll();
     }
 
-    // Obtener todas las publicaciones de un usuario
+
     public List<Publicacion> obtenerPublicacionesUsuario(Integer idUsuario) {
         return publicacionRepository.findByUsuarioId(idUsuario);
     }
 
-    // Borrar una publicación
+
     @Override
     public void borrarPublicacion(int publicacionId, int usuarioId) {
         Optional<Publicacion> publicacionOpt = publicacionRepository.findById(publicacionId);
@@ -52,5 +54,26 @@ public class PublicacionService implements IPublicacionService {
         } else {
             throw new RuntimeException("Publicación no encontrada");
         }
+    }
+
+    public List<PublicacionDTO> getPublicacionesParaTi (Perfil perfil){
+        List<Publicacion> publicaciones = publicacionRepository.findAllExceptByUsuario(perfil.getUsuario());
+        List<PublicacionDTO> publicacionDTOList = new ArrayList<>();
+
+        for (Publicacion publicacion : publicaciones) {
+            PublicacionDTO publicacionDTO = new PublicacionDTO();
+            publicacionDTO.setId(publicacion.getId());
+            publicacionDTO.setTitulo(publicacion.getTitulo());
+            publicacionDTO.setImagenLink(publicacion.getImagenLink());
+            publicacionDTO.setDescripcion(publicacion.getDescripcion());
+            publicacionDTO.setReceta(publicacion.getReceta());
+            publicacionDTO.setDificultad(publicacion.getDificultad());
+            publicacionDTO.setTiempoPreparacion(publicacion.getTiempoPreparacion());
+            publicacionDTO.setTiempoCoccion(publicacion.getTiempoCoccion());
+            publicacionDTO.setRaciones(publicacion.getRaciones());
+            publicacionDTOList.add(publicacionDTO);
+        }
+
+        return  publicacionDTOList;
     }
 }

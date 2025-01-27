@@ -45,10 +45,12 @@ public class UsuarioService implements UserDetailsService {
         Usuario nuevoUsuario = new Usuario();
         nuevoUsuario.setUsername(dto.getUsername());
         nuevoUsuario.setPassword(passwordEncoder.encode(dto.getPassword()));
+        nuevoUsuario.setEmail(dto.getEmail());
         nuevoUsuario.setRol(Rol.Perfil);
         nuevoUsuario.setEstado(Estado.Activo);
 
         Perfil perfil = new Perfil();
+        perfil.setUsername(dto.getUsername());
         perfil.setEmail(dto.getEmail());
         perfil.setEstado(String.valueOf(Estado.Activo));
 

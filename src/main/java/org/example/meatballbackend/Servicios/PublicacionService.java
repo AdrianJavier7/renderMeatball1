@@ -1,10 +1,12 @@
 package org.example.meatballbackend.Servicios;
 
 import org.example.meatballbackend.Dto.PublicacionDTO;
+import org.example.meatballbackend.Entidades.Etiqueta;
 import org.example.meatballbackend.Entidades.Perfil;
 import org.example.meatballbackend.Entidades.Publicacion;
 import org.example.meatballbackend.Entidades.Usuario;
 import org.example.meatballbackend.Enums.Rol;
+import org.example.meatballbackend.Repositorios.EtiquetaRepository;
 import org.example.meatballbackend.Repositorios.PublicacionRepository;
 import org.example.meatballbackend.Repositorios.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,12 @@ public class PublicacionService implements IPublicacionService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private EtiquetaService etiquetaService;
+
+    @Autowired
+    private EtiquetaRepository etiquetaRepository;
 
     // Crear una publicación
     @Override
@@ -75,5 +83,57 @@ public class PublicacionService implements IPublicacionService {
         }
 
         return  publicacionDTOList;
+    }
+
+    public Publicacion crearPublicacionDTO(PublicacionDTO publicacion, Perfil perfil){
+
+        List<Etiqueta> todasLasEtiquetas = etiquetaService.obtenerEtiquetas();
+        List<Etiqueta> etiquetasDePublicacion = new ArrayList<>();
+
+        if(publicacion.getEtiquetas() != null){
+            for (String etiqueta : publicacion.getEtiquetas()) {
+
+                Etiqueta etiquetaEncontrada = todasLasEtiquetas.stream().filter(e -> e.getNombre().equals(etiqueta)).findFirst().orElse(null);
+                etiquetasDePublicacion.add(etiquetaEncontrada);
+
+                if(etiquetaEncontrada == null){
+                    Etiqueta nuevaEtiqueta = new Etiqueta();
+                    nuevaEtiqueta.setNombre(etiqueta);
+                    etiquetaRepository.save(nuevaEtiqueta);
+
+                    Publicacion publicacionSinDto = new Publicacion();
+
+                    publicacionSinDto.setTitulo(publicacion.getTitulo());
+                    publicacionSinDto.setImagenLink(publicacion.getImagenLink());
+                    publicacionSinDto.setDescripcion(publicacion.getDescripcion());
+                    publicacionSinDto.setReceta(publicacion.getReceta());
+                    publicacionSinDto.setDificultad(publicacion.getDificultad());
+                    publicacionSinDto.setTiempoPreparacion(publicacion.getTiempoPreparacion());
+                    publicacionSinDto.setTiempoCoccion(publicacion.getTiempoCoccion());
+                    publicacionSinDto.setRaciones(publicacion.getRaciones());
+                    publicacionSinDto.setUsuario(perfil.getUsuario());
+                    publicacionSinDto.setEtiquetas(etiquetasDePublicacion);
+                    publicacionRepository.save(publicacionSinDto);
+                    return publicacionSinDto;
+                } else{
+
+                    Publicacion publicacionSinDto = new Publicacion();
+
+                    publicacionSinDto.setTitulo(publicacion.getTitulo());
+                    publicacionSinDto.setImagenLink(publicacion.getImagenLink());
+                    publicacionSinDto.setDescripcion(publicacion.getDescripcion());
+                    publicacionSinDto.setReceta(publicacion.getReceta());
+                    publicacionSinDto.setDificultad(publicacion.getDificultad());
+                    publicacionSinDto.setTiempoPreparacion(publicacion.getTiempoPreparacion());
+                    publicacionSinDto.setTiempoCoccion(publicacion.getTiempoCoccion());
+                    publicacionSinDto.setRaciones(publicacion.getRaciones());
+                    publicacionSinDto.setUsuario(perfil.getUsuario());
+                    publicacionSinDto.setEtiquetas(etiquetasDePublicacion);
+                    publicacionRepository.save(publicacionSinDto);
+                    return publicacionSinDto;
+                }
+            }
+        }
+        return null;
     }
 }

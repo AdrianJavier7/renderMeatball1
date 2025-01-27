@@ -35,6 +35,9 @@ public class Perfil {
     @Column(name = "estado")
     private String estado;
 
+    @Column(name = "username")
+    private String username;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", referencedColumnName = "id")
     private Usuario usuario;

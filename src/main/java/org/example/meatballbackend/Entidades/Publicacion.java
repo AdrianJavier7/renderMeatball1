@@ -63,6 +63,14 @@ public class Publicacion {
             )
     private List<Usuario> usuarios;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "Etiqueta_Publicacion",
+            joinColumns = @JoinColumn(name = "publicacion_id"),
+            inverseJoinColumns = @JoinColumn(name = "etiqueta_id")
+    )
+    private List<Etiqueta> etiquetas;
+
 
 
 }

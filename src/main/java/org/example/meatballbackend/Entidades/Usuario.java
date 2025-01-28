@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Table(name = "Usuario", schema = "meatball" , catalog = "postgres")
@@ -38,6 +39,14 @@ public class Usuario implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "estado")
     private Estado estado;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "Seguidores"
+            , joinColumns = @JoinColumn(name = "seguidor_id")
+            , inverseJoinColumns = @JoinColumn(name = "seguido_id")
+    )
+    private List<Usuario> seguidos;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

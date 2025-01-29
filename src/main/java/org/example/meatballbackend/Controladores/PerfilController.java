@@ -1,11 +1,11 @@
 package org.example.meatballbackend.Controladores;
 
 import org.example.meatballbackend.Dto.PerfilDTO;
+import org.example.meatballbackend.Entidades.Perfil;
+import org.example.meatballbackend.Security.JWTService;
 import org.example.meatballbackend.Servicios.PerfilService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -15,9 +15,18 @@ public class PerfilController {
     @Autowired
     private PerfilService perfilService;
 
+    @Autowired
+    private JWTService jwtService;
+
     @GetMapping("/all")
     public List<PerfilDTO> getAllPerfiles(){
         List<PerfilDTO> perfiles = perfilService.getAll();
         return perfiles;
+    }
+
+    @PutMapping("/update")
+    public PerfilDTO updatePerfil(@RequestHeader("Authorization") String token, @RequestBody PerfilDTO perfilDTO) {
+        Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        return perfilService.updatePerfil(perfilLogueado, perfilDTO);
     }
 }

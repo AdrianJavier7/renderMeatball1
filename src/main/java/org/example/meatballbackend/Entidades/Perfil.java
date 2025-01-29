@@ -26,7 +26,7 @@ public class Perfil {
     @Column(name = "foto_perfil_link")
     private String fotoPerfilLink;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "telefono")
@@ -35,7 +35,7 @@ public class Perfil {
     @Column(name = "estado")
     private String estado;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String username;
 
     @OneToOne(fetch = FetchType.LAZY)

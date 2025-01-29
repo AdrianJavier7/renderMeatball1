@@ -24,15 +24,5 @@ public class Ingrediente {
     @Column(name = "nombre")
     private String nombre;
 
-    @Column(name = "cantidad")
-    private Integer cantidad;
-
-    @ManyToMany
-    @JoinTable(
-            name = "Publicacion_Ingrediente",
-            joinColumns = @JoinColumn(name = "id_ingrediente", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "id_receta", referencedColumnName = "id")
-    )
-    private List<Publicacion> publicaciones;
 
 }

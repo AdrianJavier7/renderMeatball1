@@ -24,6 +24,7 @@ public class PerfilController {
         return perfiles;
     }
 
+
     @PutMapping("/update")
     public PerfilDTO updatePerfil(@RequestHeader("Authorization") String token, @RequestBody PerfilDTO perfilDTO) {
         Perfil perfilLogueado = jwtService.extraerPerfilToken(token);

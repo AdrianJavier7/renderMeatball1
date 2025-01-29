@@ -15,4 +15,6 @@ public class PerfilDTO {
     private String email;
     private String telefono;
     private String estado;
+
+    private String username;
 }

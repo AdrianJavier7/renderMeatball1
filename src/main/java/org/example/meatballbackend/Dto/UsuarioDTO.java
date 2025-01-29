@@ -11,6 +11,7 @@ import org.example.meatballbackend.Enums.Rol;
 public class UsuarioDTO {
     private Integer id;
     private String nombre;
+    private String email;
     private String contrasena;
     private Rol rol;
 }

@@ -1,6 +1,7 @@
 package org.example.meatballbackend.Controladores;
 
 import lombok.AllArgsConstructor;
+import org.example.meatballbackend.Dto.PerfilDTO;
 import org.example.meatballbackend.Dto.PublicacionDTO;
 import org.example.meatballbackend.Entidades.Perfil;
 import org.example.meatballbackend.Security.JWTService;
@@ -18,8 +19,10 @@ import java.util.List;
 @AllArgsConstructor
 public class PublicacionController {
 
+    @Autowired
     PublicacionService publicacionService;
 
+    @Autowired
     private JWTService jwtService;
 
     @GetMapping("/parati")
@@ -28,4 +31,9 @@ public class PublicacionController {
         return publicacionService.getPublicacionesParaTi(perfiLogueado);
     }
 
+    @GetMapping("/all")
+    public List<PublicacionDTO> getAllPublicaciones(){
+        List<PublicacionDTO> publicaciones = publicacionService.getAll();
+        return publicaciones;
+    }
 }

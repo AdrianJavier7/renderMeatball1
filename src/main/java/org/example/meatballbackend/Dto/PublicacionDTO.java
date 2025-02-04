@@ -18,4 +18,6 @@ public class PublicacionDTO {
     private int tiempoPreparacion;
     private int tiempoCoccion;
     private int raciones;
+    private Integer usuarioId;
+    private String username;
 }

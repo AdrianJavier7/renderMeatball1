@@ -1,5 +1,6 @@
 package org.example.meatballbackend.Servicios;
 
+import org.example.meatballbackend.Dto.PerfilDTO;
 import org.example.meatballbackend.Dto.PublicacionDTO;
 import org.example.meatballbackend.Entidades.Perfil;
 import org.example.meatballbackend.Entidades.Publicacion;
@@ -75,5 +76,20 @@ public class PublicacionService implements IPublicacionService {
         }
 
         return  publicacionDTOList;
+    }
+
+    public List<PublicacionDTO> getAll() {
+        List<Publicacion> publicaciones = publicacionRepository.findAll();
+        List<PublicacionDTO> publicacionDTOS = new ArrayList<>();
+
+        for (Publicacion p : publicaciones) {
+            PublicacionDTO dto = new PublicacionDTO();
+            dto.setId(p.getId());
+            dto.setUsuarioId(p.getUsuario().getId());
+            dto.setUsername(p.getUsuario().getUsername());
+            publicacionDTOS.add(dto);
+        }
+
+        return publicacionDTOS;
     }
 }

@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PerfilRepository extends JpaRepository<Perfil, Integer> {
     Perfil findTopByUsuario(Usuario usuario);
+    Perfil findByUsuarioId(Integer usuarioId);
 }

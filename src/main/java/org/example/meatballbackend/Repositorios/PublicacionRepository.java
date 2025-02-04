@@ -17,4 +17,6 @@ public interface PublicacionRepository extends JpaRepository<Publicacion, Intege
 
     @Query("SELECT p FROM Publicacion p WHERE p.usuario <> :usuario")
     List<Publicacion> findAllExceptByUsuario(@Param("usuario") Usuario usuario);
+
+    List<Publicacion> findAll();
 }

@@ -1,11 +1,11 @@
 package org.example.meatballbackend.Servicios;
 
-import org.example.meatballbackend.Dto.PerfilDTO;
+import org.example.meatballbackend.Dto.ComentarioDTO;
 import org.example.meatballbackend.Dto.PublicacionDTO;
-import org.example.meatballbackend.Entidades.Perfil;
-import org.example.meatballbackend.Entidades.Publicacion;
-import org.example.meatballbackend.Entidades.Usuario;
+import org.example.meatballbackend.Entidades.*;
 import org.example.meatballbackend.Enums.Rol;
+import org.example.meatballbackend.Repositorios.ComentarioRepository;
+import org.example.meatballbackend.Repositorios.EtiquetaRepository;
 import org.example.meatballbackend.Repositorios.PublicacionRepository;
 import org.example.meatballbackend.Repositorios.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,15 @@ public class PublicacionService implements IPublicacionService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private EtiquetaService etiquetaService;
+
+    @Autowired
+    private EtiquetaRepository etiquetaRepository;
+
+    @Autowired
+    private ComentarioRepository comentarioRepository;
 
     // Crear una publicación
     @Override
@@ -92,4 +101,30 @@ public class PublicacionService implements IPublicacionService {
 
         return publicacionDTOS;
     }
+
+    public void darLike(Perfil perfil, int publicacionId) {
+        Publicacion publicacion = publicacionRepository.findById(publicacionId)
+                .orElseThrow(() -> new RuntimeException("Publicación no encontrada"));
+
+        if (publicacion.getLikes().contains(perfil.getUsuario())) {
+            publicacion.getLikes().remove(perfil.getUsuario());
+        } else {
+            publicacion.getLikes().add(perfil.getUsuario());
+        }
+
+        publicacionRepository.save(publicacion);
+    }
+
+    public Comentario comentar(Perfil perfil, ComentarioDTO comentarioDTO) {
+        Comentario comentario = new Comentario();
+        comentario.setComentario(comentarioDTO.getComentario());
+        comentario.setFecha(comentarioDTO.getFecha().toString());
+        comentario.setUsuario(perfil.getUsuario());
+        comentario.setPublicacion(publicacionRepository.findById(comentarioDTO.getIdPublicacion()).orElseThrow(() -> new RuntimeException("Publicación no encontrada")));
+
+        comentarioRepository.save(comentario);
+
+        return comentario;
+    }
+
 }

@@ -24,7 +24,7 @@ public class Comentario {
     private String comentario;
 
     @Column(name = "fecha")
-    private LocalDateTime fecha;
+    private String fecha;
 
     @OneToOne
     @JoinColumn(name = "id_usuario", referencedColumnName = "id")

@@ -1,16 +1,15 @@
 package org.example.meatballbackend.Controladores;
 
 import lombok.AllArgsConstructor;
-import org.example.meatballbackend.Dto.PerfilDTO;
+import org.example.meatballbackend.Dto.ComentarioDTO;
 import org.example.meatballbackend.Dto.PublicacionDTO;
+import org.example.meatballbackend.Entidades.Comentario;
 import org.example.meatballbackend.Entidades.Perfil;
+import org.example.meatballbackend.Entidades.Publicacion;
 import org.example.meatballbackend.Security.JWTService;
 import org.example.meatballbackend.Servicios.PublicacionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,4 +35,18 @@ public class PublicacionController {
         List<PublicacionDTO> publicaciones = publicacionService.getAll();
         return publicaciones;
     }
+
+    @PostMapping("/like")
+    public void darLike(@RequestParam int idPublicacion, @RequestHeader("Authorization") String token) {
+        Perfil perfiLogueado = jwtService.extraerPerfilToken(token);
+        publicacionService.darLike(perfiLogueado, idPublicacion );
+    }
+
+    @PostMapping("/comentar")
+    public Comentario comentar(@RequestBody ComentarioDTO comentarioDTO, @RequestHeader("Authorization") String token) {
+        Perfil perfiLogueado = jwtService.extraerPerfilToken(token);
+
+        return publicacionService.comentar(perfiLogueado, comentarioDTO);
+    }
+
 }

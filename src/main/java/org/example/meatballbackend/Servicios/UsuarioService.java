@@ -83,4 +83,9 @@ public class UsuarioService implements UserDetailsService {
             throw new UsernameNotFoundException("Usuario no encontrado");
         }
     }
+
+    public Usuario obtenerUsuarioPorId(int id) {
+        return usuarioRepository.findById(id).orElse(null);
+    }
+
 }

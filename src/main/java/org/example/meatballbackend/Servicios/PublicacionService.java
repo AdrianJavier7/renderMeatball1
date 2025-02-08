@@ -1,6 +1,7 @@
 package org.example.meatballbackend.Servicios;
 
 import org.example.meatballbackend.Dto.ComentarioDTO;
+import org.example.meatballbackend.Dto.ComentarioRecibidoDTO;
 import org.example.meatballbackend.Dto.PublicacionDTO;
 import org.example.meatballbackend.Entidades.*;
 import org.example.meatballbackend.Enums.Rol;
@@ -11,6 +12,7 @@ import org.example.meatballbackend.Repositorios.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -109,12 +111,12 @@ public class PublicacionService implements IPublicacionService {
         publicacionRepository.save(publicacion);
     }
 
-    public Comentario comentar(Perfil perfil, ComentarioDTO comentarioDTO) {
+    public Comentario comentar(Perfil perfil, ComentarioRecibidoDTO comentarioDTO) {
         Comentario comentario = new Comentario();
-        comentario.setComentario(comentarioDTO.getComentario());
-        comentario.setFecha(comentarioDTO.getFecha().toString());
+        comentario.setComentario(comentarioDTO.comentarioTexto);
+        comentario.setFecha(String.valueOf(LocalDateTime.now()));
         comentario.setPerfil(perfil);
-        comentario.setPublicacion(publicacionRepository.findById(comentarioDTO.getIdPublicacion()).orElseThrow(() -> new RuntimeException("Publicación no encontrada")));
+        comentario.setPublicacion(publicacionRepository.findById(comentarioDTO.idPublicacion).orElseThrow(() -> new RuntimeException("Publicación no encontrada")));
 
         comentarioRepository.save(comentario);
 
@@ -132,6 +134,7 @@ public class PublicacionService implements IPublicacionService {
             dto.setFecha(c.getFecha());
             dto.setFotoUsuario(c.getPerfil().getFotoPerfilLink());
             dto.setNombreUsuario(c.getPerfil().getNombre());
+            dto.setIdPublicacion(c.getPublicacion().getId());
             comentarioDTOS.add(dto);
         }
 

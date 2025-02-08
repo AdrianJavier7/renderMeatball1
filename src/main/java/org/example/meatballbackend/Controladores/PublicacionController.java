@@ -2,6 +2,7 @@ package org.example.meatballbackend.Controladores;
 
 import lombok.AllArgsConstructor;
 import org.example.meatballbackend.Dto.ComentarioDTO;
+import org.example.meatballbackend.Dto.ComentarioRecibidoDTO;
 import org.example.meatballbackend.Dto.PublicacionDTO;
 import org.example.meatballbackend.Entidades.Comentario;
 import org.example.meatballbackend.Entidades.Perfil;
@@ -42,15 +43,15 @@ public class PublicacionController {
     }
 
     @PostMapping("/comentar")
-    public Comentario comentar(@RequestBody ComentarioDTO comentarioDTO, @RequestHeader("Authorization") String token) {
+    public Comentario comentar(@RequestBody ComentarioRecibidoDTO comentarioDTO, @RequestHeader("Authorization") String token) {
         Perfil perfiLogueado = jwtService.extraerPerfilToken(token);
 
         return publicacionService.comentar(perfiLogueado, comentarioDTO);
     }
 
     @GetMapping("/comentarios")
-    public List<ComentarioDTO> getComentarios(@RequestParam String idPublicacion) {
-        return publicacionService.getComentarios(Integer.parseInt(idPublicacion));
+    public List<ComentarioDTO> getComentarios(@RequestParam int idPublicacion, @RequestHeader("Authorization") String token){
+        return publicacionService.getComentarios(idPublicacion);
     }
 
 }

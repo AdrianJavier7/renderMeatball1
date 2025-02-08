@@ -111,6 +111,17 @@ public class PublicacionService implements IPublicacionService {
         publicacionRepository.save(publicacion);
     }
 
+    public void quitarLike(Perfil perfil, int publicacionId) {
+        Publicacion publicacion = publicacionRepository.findById(publicacionId)
+                .orElseThrow(() -> new RuntimeException("Publicación no encontrada"));
+
+        if (publicacion.getLikes().contains(perfil.getUsuario())) {
+            publicacion.getLikes().remove(perfil.getUsuario());
+        }
+
+        publicacionRepository.save(publicacion);
+    }
+
     public ComentarioDTO comentar(Perfil perfil, ComentarioRecibidoDTO comentarioDTO) {
         Comentario comentario = new Comentario();
         comentario.setComentario(comentarioDTO.comentarioTexto);

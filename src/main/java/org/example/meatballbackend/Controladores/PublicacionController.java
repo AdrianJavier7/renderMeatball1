@@ -42,6 +42,12 @@ public class PublicacionController {
         publicacionService.darLike(perfiLogueado, idPublicacion );
     }
 
+    @PostMapping("/quitarlike")
+    public void quitarLike(@RequestParam int idPublicacion, @RequestHeader("Authorization") String token) {
+        Perfil perfiLogueado = jwtService.extraerPerfilToken(token);
+        publicacionService.quitarLike(perfiLogueado, idPublicacion );
+    }
+
     @PostMapping("/comentar")
     public ComentarioDTO comentar(@RequestBody ComentarioRecibidoDTO comentarioDTO, @RequestHeader("Authorization") String token) {
         Perfil perfiLogueado = jwtService.extraerPerfilToken(token);

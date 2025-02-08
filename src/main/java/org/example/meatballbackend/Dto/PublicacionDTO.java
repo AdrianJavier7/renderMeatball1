@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.meatballbackend.Enums.Dificultad;
 
-import java.util.List;
-
 @Data
 @Getter
 @Setter
@@ -20,5 +18,6 @@ public class PublicacionDTO {
     private int tiempoPreparacion;
     private int tiempoCoccion;
     private int raciones;
-    private List<String> etiquetas;
+    private Integer usuarioId;
+    private String username;
 }

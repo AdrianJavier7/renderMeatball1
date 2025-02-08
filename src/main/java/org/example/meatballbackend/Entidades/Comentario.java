@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @ToString
 
 public class Comentario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -23,7 +24,7 @@ public class Comentario {
     private String comentario;
 
     @Column(name = "fecha")
-    private LocalDateTime fecha;
+    private String fecha;
 
     @OneToOne
     @JoinColumn(name = "id_usuario", referencedColumnName = "id")

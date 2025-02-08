@@ -24,8 +24,5 @@ public class Ingrediente {
     @Column(name = "nombre")
     private String nombre;
 
-    @Column(name = "cantidad")
-    private Integer cantidad;
-
 
 }

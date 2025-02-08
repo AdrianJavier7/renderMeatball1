@@ -61,7 +61,7 @@ public class Publicacion {
     @JoinTable(
             name = "Usuario_Like"
             )
-    private List<Usuario> usuarios;
+    private List<Usuario> likes;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

@@ -111,7 +111,7 @@ public class PublicacionService implements IPublicacionService {
         publicacionRepository.save(publicacion);
     }
 
-    public Comentario comentar(Perfil perfil, ComentarioRecibidoDTO comentarioDTO) {
+    public ComentarioDTO comentar(Perfil perfil, ComentarioRecibidoDTO comentarioDTO) {
         Comentario comentario = new Comentario();
         comentario.setComentario(comentarioDTO.comentarioTexto);
         comentario.setFecha(String.valueOf(LocalDateTime.now()));
@@ -120,7 +120,13 @@ public class PublicacionService implements IPublicacionService {
 
         comentarioRepository.save(comentario);
 
-        return comentario;
+        ComentarioDTO comentarioResponseDTO = new ComentarioDTO();
+        comentarioResponseDTO.setComentario(comentario.getComentario());
+        comentarioResponseDTO.setFecha(comentario.getFecha());
+        comentarioResponseDTO.setNombreUsuario(comentario.getPerfil().getNombre());
+        comentarioResponseDTO.setIdPublicacion(comentario.getPublicacion().getId());
+
+        return comentarioResponseDTO;
     }
 
     public List<ComentarioDTO> getComentarios(int publicacionId) {

@@ -43,7 +43,7 @@ public class PublicacionController {
     }
 
     @PostMapping("/comentar")
-    public Comentario comentar(@RequestBody ComentarioRecibidoDTO comentarioDTO, @RequestHeader("Authorization") String token) {
+    public ComentarioDTO comentar(@RequestBody ComentarioRecibidoDTO comentarioDTO, @RequestHeader("Authorization") String token) {
         Perfil perfiLogueado = jwtService.extraerPerfilToken(token);
 
         return publicacionService.comentar(perfiLogueado, comentarioDTO);

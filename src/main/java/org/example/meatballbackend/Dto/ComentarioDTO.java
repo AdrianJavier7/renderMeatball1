@@ -11,6 +11,10 @@ import java.time.LocalDateTime;
 @Setter
 public class ComentarioDTO {
     private String comentario;
-    private LocalDateTime fecha;
+    private String fecha;
     private Integer idPublicacion;
+
+    private String nombreUsuario;
+    private String fotoUsuario;
+
 }

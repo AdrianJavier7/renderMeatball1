@@ -27,8 +27,8 @@ public class Comentario {
     private String fecha;
 
     @OneToOne
-    @JoinColumn(name = "id_usuario", referencedColumnName = "id")
-    private Usuario usuario;
+    @JoinColumn(name = "id_perfil", referencedColumnName = "id")
+    private Perfil perfil;
 
     @OneToOne
     @JoinColumn(name = "id_publicacion", referencedColumnName = "id")

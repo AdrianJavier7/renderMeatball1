@@ -25,12 +25,6 @@ public class PublicacionService implements IPublicacionService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private EtiquetaService etiquetaService;
-
-    @Autowired
-    private EtiquetaRepository etiquetaRepository;
-
-    @Autowired
     private ComentarioRepository comentarioRepository;
 
     // Crear una publicación
@@ -119,7 +113,7 @@ public class PublicacionService implements IPublicacionService {
         Comentario comentario = new Comentario();
         comentario.setComentario(comentarioDTO.getComentario());
         comentario.setFecha(comentarioDTO.getFecha().toString());
-        comentario.setUsuario(perfil.getUsuario());
+        comentario.setPerfil(perfil);
         comentario.setPublicacion(publicacionRepository.findById(comentarioDTO.getIdPublicacion()).orElseThrow(() -> new RuntimeException("Publicación no encontrada")));
 
         comentarioRepository.save(comentario);
@@ -127,4 +121,20 @@ public class PublicacionService implements IPublicacionService {
         return comentario;
     }
 
+    public List<ComentarioDTO> getComentarios(int publicacionId) {
+
+        List<Comentario> comentarios = comentarioRepository.findByPublicacionId(publicacionId);
+        List<ComentarioDTO> comentarioDTOS = new ArrayList<>();
+
+        for (Comentario c : comentarios) {
+            ComentarioDTO dto = new ComentarioDTO();
+            dto.setComentario(c.getComentario());
+            dto.setFecha(c.getFecha());
+            dto.setFotoUsuario(c.getPerfil().getFotoPerfilLink());
+            dto.setNombreUsuario(c.getPerfil().getNombre());
+            comentarioDTOS.add(dto);
+        }
+
+        return comentarioDTOS;
+    }
 }

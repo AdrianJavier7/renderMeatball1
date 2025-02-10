@@ -1,17 +1,18 @@
 package org.example.meatballbackend.Servicios;
 
+import org.example.meatballbackend.Dto.ComentarioDTO;
+import org.example.meatballbackend.Dto.ComentarioRecibidoDTO;
 import org.example.meatballbackend.Dto.PublicacionDTO;
-import org.example.meatballbackend.Entidades.Etiqueta;
-import org.example.meatballbackend.Entidades.Perfil;
-import org.example.meatballbackend.Entidades.Publicacion;
-import org.example.meatballbackend.Entidades.Usuario;
+import org.example.meatballbackend.Entidades.*;
 import org.example.meatballbackend.Enums.Rol;
+import org.example.meatballbackend.Repositorios.ComentarioRepository;
 import org.example.meatballbackend.Repositorios.EtiquetaRepository;
 import org.example.meatballbackend.Repositorios.PublicacionRepository;
 import org.example.meatballbackend.Repositorios.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,10 +27,7 @@ public class PublicacionService implements IPublicacionService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private EtiquetaService etiquetaService;
-
-    @Autowired
-    private EtiquetaRepository etiquetaRepository;
+    private ComentarioRepository comentarioRepository;
 
     // Crear una publicación
     @Override
@@ -85,55 +83,78 @@ public class PublicacionService implements IPublicacionService {
         return  publicacionDTOList;
     }
 
-    public Publicacion crearPublicacionDTO(PublicacionDTO publicacion, Perfil perfil){
+    public List<PublicacionDTO> getAll() {
+        List<Publicacion> publicaciones = publicacionRepository.findAll();
+        List<PublicacionDTO> publicacionDTOS = new ArrayList<>();
 
-        List<Etiqueta> todasLasEtiquetas = etiquetaService.obtenerEtiquetas();
-        List<Etiqueta> etiquetasDePublicacion = new ArrayList<>();
-
-        if(publicacion.getEtiquetas() != null){
-            for (String etiqueta : publicacion.getEtiquetas()) {
-
-                Etiqueta etiquetaEncontrada = todasLasEtiquetas.stream().filter(e -> e.getNombre().equals(etiqueta)).findFirst().orElse(null);
-                etiquetasDePublicacion.add(etiquetaEncontrada);
-
-                if(etiquetaEncontrada == null){
-                    Etiqueta nuevaEtiqueta = new Etiqueta();
-                    nuevaEtiqueta.setNombre(etiqueta);
-                    etiquetaRepository.save(nuevaEtiqueta);
-
-                    Publicacion publicacionSinDto = new Publicacion();
-
-                    publicacionSinDto.setTitulo(publicacion.getTitulo());
-                    publicacionSinDto.setImagenLink(publicacion.getImagenLink());
-                    publicacionSinDto.setDescripcion(publicacion.getDescripcion());
-                    publicacionSinDto.setReceta(publicacion.getReceta());
-                    publicacionSinDto.setDificultad(publicacion.getDificultad());
-                    publicacionSinDto.setTiempoPreparacion(publicacion.getTiempoPreparacion());
-                    publicacionSinDto.setTiempoCoccion(publicacion.getTiempoCoccion());
-                    publicacionSinDto.setRaciones(publicacion.getRaciones());
-                    publicacionSinDto.setUsuario(perfil.getUsuario());
-                    publicacionSinDto.setEtiquetas(etiquetasDePublicacion);
-                    publicacionRepository.save(publicacionSinDto);
-                    return publicacionSinDto;
-                } else{
-
-                    Publicacion publicacionSinDto = new Publicacion();
-
-                    publicacionSinDto.setTitulo(publicacion.getTitulo());
-                    publicacionSinDto.setImagenLink(publicacion.getImagenLink());
-                    publicacionSinDto.setDescripcion(publicacion.getDescripcion());
-                    publicacionSinDto.setReceta(publicacion.getReceta());
-                    publicacionSinDto.setDificultad(publicacion.getDificultad());
-                    publicacionSinDto.setTiempoPreparacion(publicacion.getTiempoPreparacion());
-                    publicacionSinDto.setTiempoCoccion(publicacion.getTiempoCoccion());
-                    publicacionSinDto.setRaciones(publicacion.getRaciones());
-                    publicacionSinDto.setUsuario(perfil.getUsuario());
-                    publicacionSinDto.setEtiquetas(etiquetasDePublicacion);
-                    publicacionRepository.save(publicacionSinDto);
-                    return publicacionSinDto;
-                }
-            }
+        for (Publicacion p : publicaciones) {
+            PublicacionDTO dto = new PublicacionDTO();
+            dto.setId(p.getId());
+            dto.setUsuarioId(p.getUsuario().getId());
+            dto.setUsername(p.getUsuario().getUsername());
+            publicacionDTOS.add(dto);
         }
-        return null;
+
+        return publicacionDTOS;
+    }
+
+    public void darLike(Perfil perfil, int publicacionId) {
+        Publicacion publicacion = publicacionRepository.findById(publicacionId)
+                .orElseThrow(() -> new RuntimeException("Publicación no encontrada"));
+
+        if (publicacion.getLikes().contains(perfil.getUsuario())) {
+            publicacion.getLikes().remove(perfil.getUsuario());
+        } else {
+            publicacion.getLikes().add(perfil.getUsuario());
+        }
+
+        publicacionRepository.save(publicacion);
+    }
+
+    public void quitarLike(Perfil perfil, int publicacionId) {
+        Publicacion publicacion = publicacionRepository.findById(publicacionId)
+                .orElseThrow(() -> new RuntimeException("Publicación no encontrada"));
+
+        if (publicacion.getLikes().contains(perfil.getUsuario())) {
+            publicacion.getLikes().remove(perfil.getUsuario());
+        }
+
+        publicacionRepository.save(publicacion);
+    }
+
+    public ComentarioDTO comentar(Perfil perfil, ComentarioRecibidoDTO comentarioDTO) {
+        Comentario comentario = new Comentario();
+        comentario.setComentario(comentarioDTO.comentarioTexto);
+        comentario.setFecha(String.valueOf(LocalDateTime.now()));
+        comentario.setPerfil(perfil);
+        comentario.setPublicacion(publicacionRepository.findById(comentarioDTO.idPublicacion).orElseThrow(() -> new RuntimeException("Publicación no encontrada")));
+
+        comentarioRepository.save(comentario);
+
+        ComentarioDTO comentarioResponseDTO = new ComentarioDTO();
+        comentarioResponseDTO.setComentario(comentario.getComentario());
+        comentarioResponseDTO.setFecha(comentario.getFecha());
+        comentarioResponseDTO.setNombreUsuario(comentario.getPerfil().getNombre());
+        comentarioResponseDTO.setIdPublicacion(comentario.getPublicacion().getId());
+
+        return comentarioResponseDTO;
+    }
+
+    public List<ComentarioDTO> getComentarios(int publicacionId) {
+
+        List<Comentario> comentarios = comentarioRepository.findByPublicacionId(publicacionId);
+        List<ComentarioDTO> comentarioDTOS = new ArrayList<>();
+
+        for (Comentario c : comentarios) {
+            ComentarioDTO dto = new ComentarioDTO();
+            dto.setComentario(c.getComentario());
+            dto.setFecha(c.getFecha());
+            dto.setFotoUsuario(c.getPerfil().getFotoPerfilLink());
+            dto.setNombreUsuario(c.getPerfil().getNombre());
+            dto.setIdPublicacion(c.getPublicacion().getId());
+            comentarioDTOS.add(dto);
+        }
+
+        return comentarioDTOS;
     }
 }

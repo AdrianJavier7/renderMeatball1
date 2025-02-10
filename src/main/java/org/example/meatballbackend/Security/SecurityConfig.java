@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> req.requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/perfil/**").hasAuthority("Perfil")
                         .requestMatchers("/publicacion/**").hasAuthority("Perfil")
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider)

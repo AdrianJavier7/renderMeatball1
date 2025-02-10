@@ -1,9 +1,11 @@
 package org.example.meatballbackend.Controladores;
 
 import lombok.AllArgsConstructor;
+import org.example.meatballbackend.Dto.ComentarioDTO;
+import org.example.meatballbackend.Dto.ComentarioRecibidoDTO;
 import org.example.meatballbackend.Dto.PublicacionDTO;
+import org.example.meatballbackend.Entidades.Comentario;
 import org.example.meatballbackend.Entidades.Perfil;
-import org.example.meatballbackend.Entidades.Publicacion;
 import org.example.meatballbackend.Security.JWTService;
 import org.example.meatballbackend.Servicios.PublicacionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +18,10 @@ import java.util.List;
 @AllArgsConstructor
 public class PublicacionController {
 
+    @Autowired
     PublicacionService publicacionService;
 
+    @Autowired
     private JWTService jwtService;
 
     @GetMapping("/parati")
@@ -26,10 +30,34 @@ public class PublicacionController {
         return publicacionService.getPublicacionesParaTi(perfiLogueado);
     }
 
-    @PostMapping("/crear")
-    public Publicacion crearPublicacion(@RequestBody PublicacionDTO publicacionDTO, @RequestHeader("Authorization") String token) {
+    @GetMapping("/all")
+    public List<PublicacionDTO> getAllPublicaciones(){
+        List<PublicacionDTO> publicaciones = publicacionService.getAll();
+        return publicaciones;
+    }
+
+    @PostMapping("/like")
+    public void darLike(@RequestParam int idPublicacion, @RequestHeader("Authorization") String token) {
         Perfil perfiLogueado = jwtService.extraerPerfilToken(token);
-        return publicacionService.crearPublicacionDTO(publicacionDTO, perfiLogueado);
+        publicacionService.darLike(perfiLogueado, idPublicacion );
+    }
+
+    @PostMapping("/quitarlike")
+    public void quitarLike(@RequestParam int idPublicacion, @RequestHeader("Authorization") String token) {
+        Perfil perfiLogueado = jwtService.extraerPerfilToken(token);
+        publicacionService.quitarLike(perfiLogueado, idPublicacion );
+    }
+
+    @PostMapping("/comentar")
+    public ComentarioDTO comentar(@RequestBody ComentarioRecibidoDTO comentarioDTO, @RequestHeader("Authorization") String token) {
+        Perfil perfiLogueado = jwtService.extraerPerfilToken(token);
+
+        return publicacionService.comentar(perfiLogueado, comentarioDTO);
+    }
+
+    @GetMapping("/comentarios")
+    public List<ComentarioDTO> getComentarios(@RequestParam int idPublicacion, @RequestHeader("Authorization") String token){
+        return publicacionService.getComentarios(idPublicacion);
     }
 
 }

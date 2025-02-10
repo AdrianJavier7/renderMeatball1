@@ -45,16 +45,14 @@ public class UsuarioService implements UserDetailsService {
         Usuario nuevoUsuario = new Usuario();
         nuevoUsuario.setUsername(dto.getUsername());
         nuevoUsuario.setPassword(passwordEncoder.encode(dto.getPassword()));
+        nuevoUsuario.setEmail(dto.getEmail());
         nuevoUsuario.setRol(Rol.Perfil);
         nuevoUsuario.setEstado(Estado.Activo);
 
         Perfil perfil = new Perfil();
-        perfil.setNombre(dto.getNombre());
-        perfil.setApellidos(dto.getApellidos());
-        perfil.setFotoPerfilLink(dto.getFotoPerfilLink());
+        perfil.setUsername(dto.getUsername());
         perfil.setEmail(dto.getEmail());
-        perfil.setTelefono(dto.getTelefono());
-        perfil.setEstado(dto.getEstado());
+        perfil.setEstado(String.valueOf(Estado.Activo));
 
         Usuario usuarioGuardado = usuarioRepository.save(nuevoUsuario);
 
@@ -85,4 +83,9 @@ public class UsuarioService implements UserDetailsService {
             throw new UsernameNotFoundException("Usuario no encontrado");
         }
     }
+
+    public Usuario obtenerUsuarioPorId(int id) {
+        return usuarioRepository.findById(id).orElse(null);
+    }
+
 }

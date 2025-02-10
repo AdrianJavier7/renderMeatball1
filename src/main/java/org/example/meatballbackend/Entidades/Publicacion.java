@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.example.meatballbackend.Enums.Dificultad;
 import org.example.meatballbackend.Enums.Estado;
-import org.example.meatballbackend.Enums.TipoCantidad;
 
 import java.util.List;
 
@@ -53,18 +52,6 @@ public class Publicacion {
     @Column(name = "estado")
     private Estado estado;
 
-    @Column(name="cantidad")
-    private int cantidad;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name="tipo_cantidad")
-    private TipoCantidad tipoCantidad;
-
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ingrediente_id" , referencedColumnName = "id")
-    private List<Ingrediente> ingredientes;
-
-
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, targetEntity = Usuario.class)
     @JoinColumn(name = "usuario_id", referencedColumnName = "id")
     private Usuario usuario;
@@ -74,7 +61,7 @@ public class Publicacion {
     @JoinTable(
             name = "Usuario_Like"
             )
-    private List<Usuario> usuarios;
+    private List<Usuario> likes;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

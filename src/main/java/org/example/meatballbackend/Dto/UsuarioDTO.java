@@ -14,4 +14,7 @@ public class UsuarioDTO {
     private String email;
     private String contrasena;
     private Rol rol;
+
+    private Integer seguidor_id;
+    private Integer seguido_id;
 }

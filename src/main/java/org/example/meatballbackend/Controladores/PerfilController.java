@@ -29,4 +29,10 @@ public class PerfilController {
         Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
         return perfilService.updatePerfil(perfilLogueado, perfilDTO);
     }
+
+    @GetMapping("/perfilPorToken")
+    public PerfilDTO getPerfil(@RequestHeader("Authorization") String token) {
+        Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        return perfilService.irPerfilDTO(perfilLogueado);
+    }
 }

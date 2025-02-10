@@ -18,8 +18,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService implements UserDetailsService {
@@ -82,5 +86,31 @@ public class UsuarioService implements UserDetailsService {
         } else {
             throw new UsernameNotFoundException("Usuario no encontrado");
         }
+    }
+
+    public void seguirUsuario(Integer seguidorId, Integer seguidoId) {
+        Assert.notNull(seguidorId, "El ID del seguidor no debe ser nulo");
+        Assert.notNull(seguidoId, "El ID del seguido no debe ser nulo");
+
+        Usuario seguidor = usuarioRepository.findById(seguidorId)
+                .orElseThrow(() -> new IllegalArgumentException("Seguidor no encontrado"));
+        Usuario seguido = usuarioRepository.findById(seguidoId)
+                .orElseThrow(() -> new IllegalArgumentException("Seguido no encontrado"));
+
+        seguidor.getSeguidos().add(seguido);
+        usuarioRepository.save(seguidor);
+    }
+
+    public void dejarDeSeguirUsuario(Integer seguidorId, Integer seguidoId) {
+        Assert.notNull(seguidorId, "El ID del seguidor no debe ser nulo");
+        Assert.notNull(seguidoId, "El ID del seguido no debe ser nulo");
+
+        Usuario seguidor = usuarioRepository.findById(seguidorId)
+                .orElseThrow(() -> new IllegalArgumentException("Seguidor no encontrado"));
+        Usuario seguido = usuarioRepository.findById(seguidoId)
+                .orElseThrow(() -> new IllegalArgumentException("Seguido no encontrado"));
+
+        seguidor.getSeguidos().remove(seguido);
+        usuarioRepository.save(seguidor);
     }
 }

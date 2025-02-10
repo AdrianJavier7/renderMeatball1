@@ -61,10 +61,10 @@ public class PerfilService implements IPerfilService {
             usuarioRepository.save(usuario);
         }
 
-        return mapToDTO(perfilActualizado);
+        return irPerfilDTO(perfilActualizado);
     }
 
-    private PerfilDTO mapToDTO(Perfil perfil) {
+    public PerfilDTO irPerfilDTO(Perfil perfil) {
         PerfilDTO dto = new PerfilDTO();
         dto.setId(perfil.getId());
         dto.setUsername(perfil.getUsername());

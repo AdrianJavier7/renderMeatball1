@@ -87,6 +87,14 @@ public class PublicacionService implements IPublicacionService {
             dto.setId(p.getId());
             dto.setUsuarioId(p.getUsuario().getId());
             dto.setUsername(p.getUsuario().getUsername());
+
+            Perfil perfil = p.getPerfil();
+            if (perfil != null) {
+                dto.setFotoPerfilLink(perfil.getFotoPerfilLink());
+            } else {
+                dto.setFotoPerfilLink(null);
+            }
+
             publicacionDTOS.add(dto);
         }
 

@@ -19,5 +19,7 @@ public class PublicacionDTO {
     private int tiempoCoccion;
     private int raciones;
     private Integer usuarioId;
+
     private String username;
+    private String fotoPerfilLink;
 }

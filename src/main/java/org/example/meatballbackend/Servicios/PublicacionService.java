@@ -134,7 +134,7 @@ public class PublicacionService implements IPublicacionService {
         ComentarioDTO comentarioResponseDTO = new ComentarioDTO();
         comentarioResponseDTO.setComentario(comentario.getComentario());
         comentarioResponseDTO.setFecha(comentario.getFecha());
-        comentarioResponseDTO.setNombreUsuario(comentario.getPerfil().getNombre());
+        comentarioResponseDTO.setNombreUsuario(comentario.getPerfil().getUsuario().getUsername());
         comentarioResponseDTO.setIdPublicacion(comentario.getPublicacion().getId());
 
         return comentarioResponseDTO;

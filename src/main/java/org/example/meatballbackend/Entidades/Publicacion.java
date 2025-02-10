@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.example.meatballbackend.Enums.Dificultad;
 import org.example.meatballbackend.Enums.Estado;
+import org.example.meatballbackend.Enums.TipoCantidad;
 
 import java.util.List;
 

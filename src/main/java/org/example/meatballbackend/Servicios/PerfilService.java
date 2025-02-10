@@ -75,4 +75,16 @@ public class PerfilService implements IPerfilService {
         dto.setTelefono(perfil.getTelefono());
         return dto;
     }
+
+    public PerfilDTO miPerfilDTO(Perfil perfil){
+        PerfilDTO dto = new PerfilDTO();
+        dto.setNombre(perfil.getNombre());
+        dto.setApellidos(perfil.getApellidos());
+        dto.setFotoPerfilLink(perfil.getFotoPerfilLink());
+        dto.setEmail(perfil.getEmail());
+        dto.setTelefono(perfil.getTelefono());
+        dto.setUsername(perfil.getUsername());
+        dto.setId(perfil.getId());
+        return dto;
+    }
 }

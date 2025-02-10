@@ -77,6 +77,8 @@ public class PublicacionService implements IPublicacionService {
             publicacionDTO.setTiempoPreparacion(publicacion.getTiempoPreparacion());
             publicacionDTO.setTiempoCoccion(publicacion.getTiempoCoccion());
             publicacionDTO.setRaciones(publicacion.getRaciones());
+            publicacionDTO.setUsuarioId(publicacion.getUsuario().getId());
+            publicacionDTO.setUsername(publicacion.getUsuario().getUsername());
             publicacionDTOList.add(publicacionDTO);
         }
 
@@ -156,5 +158,26 @@ public class PublicacionService implements IPublicacionService {
         }
 
         return comentarioDTOS;
+    }
+
+    public List<PublicacionDTO> getPublicacionesUsuario(Perfil perfil){
+        List<Publicacion> publicaciones = publicacionRepository.findByUsuarioId(perfil.getUsuario().getId());
+        List<PublicacionDTO> publicacionDTOS = new ArrayList<>();
+
+        for (Publicacion p : publicaciones) {
+            PublicacionDTO dto = new PublicacionDTO();
+            dto.setId(p.getId());
+            dto.setTitulo(p.getTitulo());
+            dto.setImagenLink(p.getImagenLink());
+            dto.setDescripcion(p.getDescripcion());
+            dto.setReceta(p.getReceta());
+            dto.setDificultad(p.getDificultad());
+            dto.setTiempoPreparacion(p.getTiempoPreparacion());
+            dto.setTiempoCoccion(p.getTiempoCoccion());
+            dto.setRaciones(p.getRaciones());
+            publicacionDTOS.add(dto);
+        }
+
+        return publicacionDTOS;
     }
 }

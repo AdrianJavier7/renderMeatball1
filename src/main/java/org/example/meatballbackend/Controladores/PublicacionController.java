@@ -36,6 +36,12 @@ public class PublicacionController {
         return publicaciones;
     }
 
+    @GetMapping("publicacionesUsuario")
+    public List<PublicacionDTO> getPublicacionesUsuario(@RequestHeader("Authorization") String token){
+
+        return null;
+    }
+
     @PostMapping("/like")
     public void darLike(@RequestParam int idPublicacion, @RequestHeader("Authorization") String token) {
         Perfil perfiLogueado = jwtService.extraerPerfilToken(token);

@@ -30,6 +30,11 @@ public class PerfilController {
         return perfilService.miPerfilDTO(perfilLogueado);
     }
 
+    @GetMapping("/{id}")
+    public PerfilDTO getPerfilById(@PathVariable Integer id){
+        return perfilService.getPerfilById(id);
+    }
+
 
     @PutMapping("/update")
     public PerfilDTO updatePerfil(@RequestHeader("Authorization") String token, @RequestBody PerfilDTO perfilDTO) {

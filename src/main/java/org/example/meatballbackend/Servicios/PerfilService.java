@@ -28,6 +28,11 @@ public class PerfilService implements IPerfilService {
         return perfilRepository.save(perfil);
     }
 
+    public PerfilDTO getPerfilById(Integer id){
+        Perfil perfil = perfilRepository.findById(id).orElseThrow();
+        return this.mapToDTO(perfil);
+    }
+
     public List<PerfilDTO> getAll(){
         List<Perfil> perfiles = perfilRepository.findAll();
         List<PerfilDTO> perfilDTOS = new ArrayList<>();

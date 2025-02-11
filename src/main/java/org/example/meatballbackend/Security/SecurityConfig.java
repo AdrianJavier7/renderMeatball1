@@ -11,6 +11,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 
 @Configuration
@@ -30,9 +33,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .cors(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req -> req.requestMatchers("/auth/**").permitAll()
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(req -> req.requestMatchers("/auth/**", "/error").permitAll()
                         .requestMatchers("/perfil/**").hasAuthority("Perfil")
                         .requestMatchers("/publicacion/**").hasAuthority("Perfil")
                         .anyRequest().authenticated())
@@ -42,5 +45,18 @@ public class SecurityConfig {
         ;
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOriginPattern("*"); // Permite cualquier origen
+        configuration.addAllowedMethod("*"); // Permite todos los métodos (GET, POST, etc.)
+        configuration.addAllowedHeader("*"); // Permite todos los headers
+        configuration.setAllowCredentials(true); // Permite enviar cookies o credenciales
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

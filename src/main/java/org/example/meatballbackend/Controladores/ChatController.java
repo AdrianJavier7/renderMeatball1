@@ -4,6 +4,7 @@ import org.example.meatballbackend.Dto.*;
 import org.example.meatballbackend.Entidades.Perfil;
 import org.example.meatballbackend.Security.JWTService;
 import org.example.meatballbackend.Servicios.ChatService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,7 +13,9 @@ import java.util.List;
 @RequestMapping("/chat")
 public class ChatController {
 
+    @Autowired
     private ChatService service;
+    @Autowired
     private JWTService jwtService;
 
 
@@ -27,7 +30,7 @@ public class ChatController {
         return service.getConversaciones(perfil);
     }
 
-    @GetMapping("/chat/{idContacto}")
+    @GetMapping("/{idContacto}")
     public List<ChatDTO> getConversacionesByperfil(@RequestHeader("Authorization") String token,
                                                    @PathVariable Integer idContacto){
         Perfil perfil = jwtService.extraerPerfilToken(token);

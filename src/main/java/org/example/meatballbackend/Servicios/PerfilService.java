@@ -20,6 +20,10 @@ public class PerfilService implements IPerfilService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    public Perfil buscarPorId(Integer id){
+        return perfilRepository.findById(id).orElseThrow();
+    }
+
     public Perfil buscarPorUsuario(Usuario usuario){
         return perfilRepository.findTopByUsuario(usuario);
     }

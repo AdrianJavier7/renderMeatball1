@@ -26,11 +26,11 @@ public class  Chat {
 
     @OneToOne
     @JoinColumn(name = "id_usuario1", referencedColumnName = "id")
-    private Usuario usuario1;
+    private Perfil usuario1;
 
     @OneToOne
     @JoinColumn(name = "id_usuario2", referencedColumnName = "id")
-    private Usuario usuario2;
+    private Perfil usuario2;
 
     @Column(name = "mensaje")
     private String mensaje;

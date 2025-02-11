@@ -24,12 +24,12 @@ public class  Chat {
     @Column(name = "fecha")
     private LocalDateTime fecha;
 
-    @OneToOne
-    @JoinColumn(name = "id_usuario1", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "id_usuario1", referencedColumnName = "id", unique = false)
     private Perfil usuario1;
 
-    @OneToOne
-    @JoinColumn(name = "id_usuario2", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "id_usuario2", referencedColumnName = "id", unique = false)
     private Perfil usuario2;
 
     @Column(name = "mensaje")

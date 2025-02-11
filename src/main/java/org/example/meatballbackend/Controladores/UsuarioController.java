@@ -17,7 +17,7 @@ public class UsuarioController {
         usuarioService.seguirUsuario(request.getSeguidor_id(), request.getSeguido_id());
     }
 
-    @DeleteMapping("/dejarSeguir")
+    @PostMapping("/dejarSeguir")
     public void dejarDeSeguirUsuario(@RequestBody UsuarioDTO request) {
         usuarioService.dejarDeSeguirUsuario(request.getSeguidor_id(), request.getSeguido_id());
     }

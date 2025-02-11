@@ -72,6 +72,8 @@ public class PublicacionService implements IPublicacionService {
             publicacionDTO.setTiempoPreparacion(publicacion.getTiempoPreparacion());
             publicacionDTO.setTiempoCoccion(publicacion.getTiempoCoccion());
             publicacionDTO.setRaciones(publicacion.getRaciones());
+            publicacionDTO.setUsuarioId(publicacion.getUsuario().getId());
+            publicacionDTO.setUsername(publicacion.getUsuario().getUsername());
             publicacionDTOList.add(publicacionDTO);
         }
 

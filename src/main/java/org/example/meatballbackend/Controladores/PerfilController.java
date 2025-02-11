@@ -30,9 +30,14 @@ public class PerfilController {
         return perfilService.updatePerfil(perfilLogueado, perfilDTO);
     }
 
-    @GetMapping("/perfilPorToken")
-    public PerfilDTO getPerfil(@RequestHeader("Authorization") String token) {
+    @GetMapping("/miPerfil")
+    public PerfilDTO getPerfil(@RequestHeader("Authorization") String token){
         Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
-        return perfilService.irPerfilDTO(perfilLogueado);
+        return perfilService.miPerfilDTO(perfilLogueado);
+    }
+
+    @GetMapping("/{id}")
+    public PerfilDTO getPerfilById(@PathVariable Integer id){
+        return perfilService.getPerfilById(id);
     }
 }

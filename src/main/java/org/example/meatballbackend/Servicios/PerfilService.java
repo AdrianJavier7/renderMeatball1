@@ -61,10 +61,10 @@ public class PerfilService implements IPerfilService {
             usuarioRepository.save(usuario);
         }
 
-        return irPerfilDTO(perfilActualizado);
+        return miPerfilDTO(perfilActualizado);
     }
 
-    public PerfilDTO irPerfilDTO(Perfil perfil) {
+    public PerfilDTO miPerfilDTO(Perfil perfil) {
         PerfilDTO dto = new PerfilDTO();
         dto.setId(perfil.getId());
         dto.setUsername(perfil.getUsername());
@@ -74,5 +74,10 @@ public class PerfilService implements IPerfilService {
         dto.setEmail(perfil.getEmail());
         dto.setTelefono(perfil.getTelefono());
         return dto;
+    }
+
+    public PerfilDTO getPerfilById(Integer id){
+        Perfil perfil = perfilRepository.findById(id).orElseThrow();
+        return this.miPerfilDTO(perfil);
     }
 }

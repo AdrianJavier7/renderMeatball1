@@ -56,6 +56,9 @@ public class Publicacion {
     @JoinColumn(name = "usuario_id", referencedColumnName = "id")
     private Usuario usuario;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, targetEntity = Perfil.class)
+    @JoinColumn(name = "perfil_id", referencedColumnName = "id")
+    private Perfil perfil;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

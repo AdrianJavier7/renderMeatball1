@@ -23,7 +23,7 @@ public class Perfil {
     @Column(name = "apellidos")
     private String apellidos;
 
-    @Column(name = "foto_perfil_link")
+    @Column(name = "fotoPerfilLink")
     private String fotoPerfilLink;
 
     @Column(name = "email", unique = true)

@@ -26,4 +26,8 @@ public interface PublicacionRepository extends JpaRepository<Publicacion, Intege
     List<Publicacion> findAll();
 
     Publicacion findTopByUsuario(Usuario usuario);
+
+    List<Publicacion> findByUsuarioIdIn(List<Integer> usuarioIds);
+
+
 }

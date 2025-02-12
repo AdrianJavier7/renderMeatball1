@@ -6,6 +6,7 @@ import org.example.meatballbackend.Dto.ComentarioRecibidoDTO;
 import org.example.meatballbackend.Dto.PublicacionDTO;
 import org.example.meatballbackend.Entidades.Comentario;
 import org.example.meatballbackend.Entidades.Perfil;
+import org.example.meatballbackend.Entidades.Publicacion;
 import org.example.meatballbackend.Security.JWTService;
 import org.example.meatballbackend.Servicios.PublicacionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,4 +67,15 @@ public class PublicacionController {
         return publicacionService.getComentarios(idPublicacion);
     }
 
+    @GetMapping("/seguidos")
+    public List<PublicacionDTO> getPublicacionesDeSeguidos(@RequestHeader("Authorization") String token) {
+        Perfil perfiLogueado = jwtService.extraerPerfilToken(token);
+        return publicacionService.getPublicacionesDeSeguidos(perfiLogueado.getUsuario().getId());
+    }
+
+    @GetMapping("/aleatorias")
+    public List<PublicacionDTO> getPublicacionesAleatorias(@RequestHeader("Authorization") String token) {
+        Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        return publicacionService.getPublicacionesAleatorias(perfilLogueado);
+    }
 }

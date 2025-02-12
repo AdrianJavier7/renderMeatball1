@@ -18,8 +18,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PublicacionService implements IPublicacionService {
@@ -29,6 +31,12 @@ public class PublicacionService implements IPublicacionService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private EtiquetaService etiquetaService;
+
+    @Autowired
+    private EtiquetaRepository etiquetaRepository;
 
     @Autowired
     private ComentarioRepository comentarioRepository;
@@ -210,7 +218,7 @@ public class PublicacionService implements IPublicacionService {
             dto.setComentario(c.getComentario());
             dto.setFecha(c.getFecha());
             dto.setFotoUsuario(c.getPerfil().getFotoPerfilLink());
-            dto.setNombreUsuario(c.getPerfil().getNombre());
+            dto.setNombreUsuario(c.getPerfil().getUsuario().getUsername());
             dto.setIdPublicacion(c.getPublicacion().getId());
             comentarioDTOS.add(dto);
         }
@@ -238,4 +246,24 @@ public class PublicacionService implements IPublicacionService {
 
         return publicacionDTOS;
     }
+
+    public List<PublicacionDTO> getPublicacionesDeSeguidos(Integer usuarioId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        List<Integer> seguidosIds = usuario.getSeguidos().stream()
+                .map(Usuario::getId)
+                .collect(Collectors.toList());
+
+        List<Publicacion> publicaciones = publicacionRepository.findByUsuarioIdIn(seguidosIds);
+        return convertirAListaDTO(publicaciones);
+    }
+
+    public List<PublicacionDTO> getPublicacionesAleatorias(Perfil perfilLogueado) {
+        List<Publicacion> publicaciones = publicacionRepository.findAll();
+        Collections.shuffle(publicaciones);
+        List<Publicacion> publicacionesAleatorias = publicaciones.stream().limit(8).collect(Collectors.toList());
+        return convertirAListaDTO(publicacionesAleatorias);
+    }
+
 }

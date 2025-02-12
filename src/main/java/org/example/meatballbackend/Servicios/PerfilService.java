@@ -34,7 +34,7 @@ public class PerfilService implements IPerfilService {
 
     public PerfilDTO getPerfilById(Integer id){
         Perfil perfil = perfilRepository.findById(id).orElseThrow();
-        return this.mapToDTO(perfil);
+        return this.miPerfilDTO(perfil);
     }
 
     public List<PerfilDTO> getAll(){
@@ -70,20 +70,9 @@ public class PerfilService implements IPerfilService {
             usuarioRepository.save(usuario);
         }
 
-        return mapToDTO(perfilActualizado);
+        return miPerfilDTO(perfilActualizado);
     }
 
-    private PerfilDTO mapToDTO(Perfil perfil) {
-        PerfilDTO dto = new PerfilDTO();
-        dto.setId(perfil.getId());
-        dto.setUsername(perfil.getUsername());
-        dto.setNombre(perfil.getNombre());
-        dto.setApellidos(perfil.getApellidos());
-        dto.setFotoPerfilLink(perfil.getFotoPerfilLink());
-        dto.setEmail(perfil.getEmail());
-        dto.setTelefono(perfil.getTelefono());
-        return dto;
-    }
 
     public PerfilDTO miPerfilDTO(Perfil perfil){
         PerfilDTO dto = new PerfilDTO();

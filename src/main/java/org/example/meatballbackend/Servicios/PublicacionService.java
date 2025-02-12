@@ -4,6 +4,7 @@ import org.example.meatballbackend.Dto.PerfilDTO;
 import org.example.meatballbackend.Dto.ComentarioDTO;
 import org.example.meatballbackend.Dto.ComentarioRecibidoDTO;
 import org.example.meatballbackend.Dto.PublicacionDTO;
+import org.example.meatballbackend.Entidades.Comentario;
 import org.example.meatballbackend.Entidades.Perfil;
 import org.example.meatballbackend.Entidades.Publicacion;
 import org.example.meatballbackend.Entidades.Usuario;
@@ -84,6 +85,8 @@ public class PublicacionService implements IPublicacionService {
             publicacionDTO.setTiempoPreparacion(publicacion.getTiempoPreparacion());
             publicacionDTO.setTiempoCoccion(publicacion.getTiempoCoccion());
             publicacionDTO.setRaciones(publicacion.getRaciones());
+            publicacionDTO.setUsuarioId(publicacion.getUsuario().getId());
+            publicacionDTO.setUsername(publicacion.getUsuario().getUsername());
             publicacionDTOList.add(publicacionDTO);
         }
 
@@ -133,9 +136,19 @@ public class PublicacionService implements IPublicacionService {
         return publicacionDTOList;
     }
 
-    public List<PublicacionDTO> getPublicacionesPorUsuarioId(Integer idUsuario) {
-        List<Publicacion> publicaciones = publicacionRepository.findByUsuarioId(idUsuario);
-        List<PublicacionDTO> publicacionDTOList = new ArrayList<>();
+    public void darLike(Perfil perfil, int publicacionId) {
+        Publicacion publicacion = publicacionRepository.findById(publicacionId)
+                .orElseThrow(() -> new RuntimeException("Publicación no encontrada"));
+
+        if (publicacion.getLikes().contains(perfil.getUsuario())) {
+            publicacion.getLikes().remove(perfil.getUsuario());
+        } else {
+            publicacion.getLikes().add(perfil.getUsuario());
+        }
+
+        publicacionRepository.save(publicacion);
+    }
+
     public void quitarLike(Perfil perfil, int publicacionId) {
         Publicacion publicacion = publicacionRepository.findById(publicacionId)
                 .orElseThrow(() -> new RuntimeException("Publicación no encontrada"));
@@ -156,6 +169,19 @@ public class PublicacionService implements IPublicacionService {
 
         comentarioRepository.save(comentario);
 
+        ComentarioDTO comentarioResponseDTO = new ComentarioDTO();
+        comentarioResponseDTO.setComentario(comentario.getComentario());
+        comentarioResponseDTO.setFecha(comentario.getFecha());
+        comentarioResponseDTO.setNombreUsuario(comentario.getPerfil().getUsuario().getUsername());
+        comentarioResponseDTO.setIdPublicacion(comentario.getPublicacion().getId());
+
+        return comentarioResponseDTO;
+    }
+
+    public List<PublicacionDTO> getPublicacionesPorUsuarioId(Integer idUsuario) {
+        List<Publicacion> publicaciones = publicacionRepository.findByUsuarioId(idUsuario);
+        List<PublicacionDTO> publicacionDTOList = new ArrayList<>();
+
         for (Publicacion publicacion : publicaciones) {
             PublicacionDTO publicacionDTO = new PublicacionDTO();
             publicacionDTO.setId(publicacion.getId());
@@ -171,13 +197,7 @@ public class PublicacionService implements IPublicacionService {
             publicacionDTO.setUsername(publicacion.getUsuario().getUsername());
             publicacionDTOList.add(publicacionDTO);
         }
-        ComentarioDTO comentarioResponseDTO = new ComentarioDTO();
-        comentarioResponseDTO.setComentario(comentario.getComentario());
-        comentarioResponseDTO.setFecha(comentario.getFecha());
-        comentarioResponseDTO.setNombreUsuario(comentario.getPerfil().getUsuario().getUsername());
-        comentarioResponseDTO.setIdPublicacion(comentario.getPublicacion().getId());
-
-        return comentarioResponseDTO;
+        return publicacionDTOList;
     }
 
     public List<ComentarioDTO> getComentarios(int publicacionId) {
@@ -195,8 +215,6 @@ public class PublicacionService implements IPublicacionService {
             comentarioDTOS.add(dto);
         }
 
-        return publicacionDTOList;
-    }
         return comentarioDTOS;
     }
 

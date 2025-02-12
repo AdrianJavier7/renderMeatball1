@@ -1,5 +1,6 @@
 package org.example.meatballbackend.Repositorios;
 
+import org.example.meatballbackend.Entidades.Perfil;
 import org.example.meatballbackend.Entidades.Publicacion;
 import org.example.meatballbackend.Entidades.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +20,6 @@ public interface PublicacionRepository extends JpaRepository<Publicacion, Intege
     List<Publicacion> findAllExceptByUsuario(@Param("usuario") Usuario usuario);
 
     List<Publicacion> findAll();
+
+    Publicacion findTopByUsuario(Usuario usuario);
 }

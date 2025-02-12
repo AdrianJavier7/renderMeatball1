@@ -6,8 +6,11 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.example.meatballbackend.Entidades.Perfil;
+import org.example.meatballbackend.Entidades.Publicacion;
 import org.example.meatballbackend.Entidades.Usuario;
+import org.example.meatballbackend.Repositorios.PublicacionRepository;
 import org.example.meatballbackend.Servicios.PerfilService;
+import org.example.meatballbackend.Servicios.PublicacionService;
 import org.example.meatballbackend.Servicios.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -31,6 +35,12 @@ public class JWTService {
 
     @Autowired
     private PerfilService perfilService;
+
+    @Autowired
+    private PublicacionService publicacionService;
+
+    @Autowired
+    private PublicacionRepository publicacionRepository;
 
     public String generateToken(Usuario usuario){
         TokenDataDTO tokenDataDTO = TokenDataDTO
@@ -53,9 +63,18 @@ public class JWTService {
         TokenDataDTO tokenDataDTO = extractTokenData(tokenSinCabecera);
         Usuario usuarioLogueado = (Usuario) usuarioService.loadUserByUsername(tokenDataDTO.getUsername());
         return perfilService.buscarPorUsuario(usuarioLogueado);
-
     }
 
+    public Usuario extraerUsuarioToken(String token) {
+        String tokenSinCabecera = token.substring(7);
+        TokenDataDTO tokenDataDTO = extractTokenData(tokenSinCabecera);
+        return (Usuario) usuarioService.loadUserByUsername(tokenDataDTO.getUsername());
+    }
+
+    public List<Publicacion> extraerPublicacionesToken(String token) {
+        Usuario usuario = extraerUsuarioToken(token);
+        return publicacionRepository.findByUsuario(usuario);
+    }
 
     private Claims extractDatosToken(String token){
         return Jwts

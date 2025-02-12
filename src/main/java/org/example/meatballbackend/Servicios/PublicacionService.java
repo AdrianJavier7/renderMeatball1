@@ -35,6 +35,10 @@ public class PublicacionService implements IPublicacionService {
         return publicacionRepository.findAll();
     }
 
+    public Publicacion buscarPorUsuario(Usuario usuario){
+        return publicacionRepository.findTopByUsuario(usuario);
+    }
+
 
     public List<Publicacion> obtenerPublicacionesUsuario(Integer idUsuario) {
         return publicacionRepository.findByUsuarioId(idUsuario);
@@ -101,5 +105,48 @@ public class PublicacionService implements IPublicacionService {
         }
 
         return publicacionDTOS;
+    }
+
+    public List<PublicacionDTO> convertirAListaDTO(List<Publicacion> publicaciones) {
+        List<PublicacionDTO> publicacionDTOList = new ArrayList<>();
+        for (Publicacion publicacion : publicaciones) {
+            PublicacionDTO publicacionDTO = new PublicacionDTO();
+            publicacionDTO.setId(publicacion.getId());
+            publicacionDTO.setTitulo(publicacion.getTitulo());
+            publicacionDTO.setImagenLink(publicacion.getImagenLink());
+            publicacionDTO.setDescripcion(publicacion.getDescripcion());
+            publicacionDTO.setReceta(publicacion.getReceta());
+            publicacionDTO.setDificultad(publicacion.getDificultad());
+            publicacionDTO.setTiempoPreparacion(publicacion.getTiempoPreparacion());
+            publicacionDTO.setTiempoCoccion(publicacion.getTiempoCoccion());
+            publicacionDTO.setRaciones(publicacion.getRaciones());
+            publicacionDTO.setUsuarioId(publicacion.getUsuario().getId());
+            publicacionDTO.setUsername(publicacion.getUsuario().getUsername());
+            publicacionDTOList.add(publicacionDTO);
+        }
+        return publicacionDTOList;
+    }
+
+    public List<PublicacionDTO> getPublicacionesPorUsuarioId(Integer idUsuario) {
+        List<Publicacion> publicaciones = publicacionRepository.findByUsuarioId(idUsuario);
+        List<PublicacionDTO> publicacionDTOList = new ArrayList<>();
+
+        for (Publicacion publicacion : publicaciones) {
+            PublicacionDTO publicacionDTO = new PublicacionDTO();
+            publicacionDTO.setId(publicacion.getId());
+            publicacionDTO.setTitulo(publicacion.getTitulo());
+            publicacionDTO.setImagenLink(publicacion.getImagenLink());
+            publicacionDTO.setDescripcion(publicacion.getDescripcion());
+            publicacionDTO.setReceta(publicacion.getReceta());
+            publicacionDTO.setDificultad(publicacion.getDificultad());
+            publicacionDTO.setTiempoPreparacion(publicacion.getTiempoPreparacion());
+            publicacionDTO.setTiempoCoccion(publicacion.getTiempoCoccion());
+            publicacionDTO.setRaciones(publicacion.getRaciones());
+            publicacionDTO.setUsuarioId(publicacion.getUsuario().getId());
+            publicacionDTO.setUsername(publicacion.getUsuario().getUsername());
+            publicacionDTOList.add(publicacionDTO);
+        }
+
+        return publicacionDTOList;
     }
 }

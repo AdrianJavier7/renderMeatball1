@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.meatballbackend.Enums.Dificultad;
+import org.example.meatballbackend.Enums.Estado;
 
 @Data
 @Getter

@@ -1,15 +1,16 @@
 package org.example.meatballbackend.Dto;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Data
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ChatDTO {
     private Integer id;
+    private String mensaje;
     private Integer idEmisor;
     private Integer idReceptor;
-    private String mensaje;
+    private String fecha;
 }

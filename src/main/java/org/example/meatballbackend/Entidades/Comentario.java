@@ -26,11 +26,11 @@ public class Comentario {
     @Column(name = "fecha")
     private String fecha;
 
-    @OneToOne
-    @JoinColumn(name = "id_usuario", referencedColumnName = "id")
-    private Usuario usuario;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, targetEntity = Perfil.class)
+    @JoinColumn(name = "id_perfil", referencedColumnName = "id")
+    private Perfil perfil;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, targetEntity = Publicacion.class)
     @JoinColumn(name = "id_publicacion", referencedColumnName = "id")
     private Publicacion publicacion;
 }

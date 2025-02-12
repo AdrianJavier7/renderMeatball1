@@ -26,7 +26,7 @@ public class Perfil {
     @Column(name = "fotoPerfilLink")
     private String fotoPerfilLink;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email")
     private String email;
 
     @Column(name = "telefono")

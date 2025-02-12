@@ -1,5 +1,4 @@
 package org.example.meatballbackend.Security;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +27,7 @@ public class JWTFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
+
         final String authHeader = request.getHeader("Authorization");
 
         if (request.getServletPath().contains("/auth")) {
@@ -46,9 +46,13 @@ public class JWTFilter extends OncePerRequestFilter {
 
         if (tokenDataDTO != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
+
             Usuario usuario = (Usuario) usuarioService.loadUserByUsername(tokenDataDTO.getUsername());
 
             if (usuario != null && !jwtService.isExpired(token)) {
+                System.out.println("Usuario autenticado: " + usuario.getUsername());
+                usuario.getAuthorities().forEach(a -> System.out.println("Rol encontrado: " + a.getAuthority()));
+
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         usuario,
                         null,
@@ -57,6 +61,7 @@ public class JWTFilter extends OncePerRequestFilter {
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
+
         }
 
         filterChain.doFilter(request, response);

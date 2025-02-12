@@ -20,12 +20,21 @@ public class PerfilService implements IPerfilService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    public Perfil buscarPorId(Integer id){
+        return perfilRepository.findById(id).orElseThrow();
+    }
+
     public Perfil buscarPorUsuario(Usuario usuario){
         return perfilRepository.findTopByUsuario(usuario);
     }
 
     public Perfil guardarPerfil(Perfil perfil){
         return perfilRepository.save(perfil);
+    }
+
+    public PerfilDTO getPerfilById(Integer id){
+        Perfil perfil = perfilRepository.findById(id).orElseThrow();
+        return this.mapToDTO(perfil);
     }
 
     public List<PerfilDTO> getAll(){
@@ -61,10 +70,10 @@ public class PerfilService implements IPerfilService {
             usuarioRepository.save(usuario);
         }
 
-        return miPerfilDTO(perfilActualizado);
+        return mapToDTO(perfilActualizado);
     }
 
-    public PerfilDTO miPerfilDTO(Perfil perfil) {
+    private PerfilDTO mapToDTO(Perfil perfil) {
         PerfilDTO dto = new PerfilDTO();
         dto.setId(perfil.getId());
         dto.setUsername(perfil.getUsername());
@@ -76,8 +85,15 @@ public class PerfilService implements IPerfilService {
         return dto;
     }
 
-    public PerfilDTO getPerfilById(Integer id){
-        Perfil perfil = perfilRepository.findById(id).orElseThrow();
-        return this.miPerfilDTO(perfil);
+    public PerfilDTO miPerfilDTO(Perfil perfil){
+        PerfilDTO dto = new PerfilDTO();
+        dto.setNombre(perfil.getNombre());
+        dto.setApellidos(perfil.getApellidos());
+        dto.setFotoPerfilLink(perfil.getFotoPerfilLink());
+        dto.setEmail(perfil.getEmail());
+        dto.setTelefono(perfil.getTelefono());
+        dto.setUsername(perfil.getUsername());
+        dto.setId(perfil.getId());
+        return dto;
     }
 }

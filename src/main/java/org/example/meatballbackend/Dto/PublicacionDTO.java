@@ -23,6 +23,7 @@ public class PublicacionDTO {
     private int tiempoCoccion;
     private int raciones;
     private Integer usuarioId;
+    private Integer perfilId;
     private String username;
     private List<IngredienteDTO> ingredientes = new ArrayList<>();
     private List<EtiquetaDTO> etiquetas = new ArrayList<>();

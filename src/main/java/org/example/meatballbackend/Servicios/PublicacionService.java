@@ -43,6 +43,9 @@ public class PublicacionService implements IPublicacionService {
     @Autowired
     private IngredienteRepository ingredienteRepository;
 
+    @Autowired
+    private PerfilRepository perfilRepository;
+
 
     // Crear una publicación
     @Override
@@ -60,6 +63,10 @@ public class PublicacionService implements IPublicacionService {
         Usuario usuario = usuarioRepository.findById(publicacionDTO.getUsuarioId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         publicacion.setUsuario(usuario);
+
+        Perfil perfil = perfilRepository.findById(publicacionDTO.getPerfilId())
+                .orElseThrow(() -> new RuntimeException("Perfil no encontrado"));
+        publicacion.setPerfil(perfil);
 
         if (publicacionDTO.getIngredientes() != null) {
             List<PublicacionIngrediente> publicacionIngredientes = new ArrayList<>();

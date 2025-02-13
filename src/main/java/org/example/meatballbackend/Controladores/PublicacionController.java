@@ -108,6 +108,7 @@ public class PublicacionController {
     public Publicacion agregarPublicacion(@RequestBody PublicacionDTO publicacionDTO, @RequestHeader("Authorization") String token) {
         Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
         publicacionDTO.setUsuarioId(perfilLogueado.getUsuario().getId());
+        publicacionDTO.setPerfilId(perfilLogueado.getId());
         return publicacionService.crearPublicacion(publicacionDTO);
     }
 

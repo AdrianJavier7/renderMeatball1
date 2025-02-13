@@ -324,7 +324,9 @@ public class PublicacionService implements IPublicacionService {
     }
 
     public List<PublicacionDTO> getPublicacionesAleatorias(Perfil perfilLogueado) {
-        List<Publicacion> publicaciones = publicacionRepository.findAll();
+        List<Publicacion> publicaciones = publicacionRepository.findAll().stream()
+                .filter(publicacion -> !publicacion.getUsuario().getId().equals(perfilLogueado.getUsuario().getId()))
+                .collect(Collectors.toList());
         Collections.shuffle(publicaciones);
         List<Publicacion> publicacionesAleatorias = publicaciones.stream().limit(8).collect(Collectors.toList());
         return convertirAListaDTO(publicacionesAleatorias);

@@ -1,15 +1,10 @@
 package org.example.meatballbackend.Servicios;
 
-import org.example.meatballbackend.Dto.PerfilDTO;
-import org.example.meatballbackend.Dto.ComentarioDTO;
-import org.example.meatballbackend.Dto.ComentarioRecibidoDTO;
-import org.example.meatballbackend.Dto.IngredienteDTO;
-import org.example.meatballbackend.Dto.PublicacionDTO;
+import org.example.meatballbackend.Dto.*;
 import org.example.meatballbackend.Entidades.Comentario;
 import org.example.meatballbackend.Entidades.Perfil;
 import org.example.meatballbackend.Entidades.Publicacion;
 import org.example.meatballbackend.Entidades.Usuario;
-import org.example.meatballbackend.Dto.VerIngredientesDTO;
 import org.example.meatballbackend.Entidades.*;
 import org.example.meatballbackend.Enums.Rol;
 import org.example.meatballbackend.Repositorios.*;
@@ -146,6 +141,7 @@ public class PublicacionService implements IPublicacionService {
         List<Publicacion> publicaciones = publicacionRepository.findAllExceptByUsuario(perfil.getUsuario());
         List<PublicacionDTO> publicacionDTOList = new ArrayList<>();
 
+
         for (Publicacion publicacion : publicaciones) {
             PublicacionDTO publicacionDTO = new PublicacionDTO();
             publicacionDTO.setId(publicacion.getId());
@@ -159,6 +155,20 @@ public class PublicacionService implements IPublicacionService {
             publicacionDTO.setRaciones(publicacion.getRaciones());
             publicacionDTO.setUsuarioId(publicacion.getUsuario().getId());
             publicacionDTO.setUsername(publicacion.getUsuario().getUsername());
+
+
+            List<IngredienteDTO> ingredientes = publicacion.getIngredientes().stream()
+                    .map(pi -> new IngredienteDTO(pi.getIngrediente().getNombre(), pi.getCantidad(), pi.getTipoCantidad()))
+                    .collect(Collectors.toList());
+
+            publicacionDTO.setIngredientes(ingredientes);
+
+            List<EtiquetaDTO> etiquetas = publicacion.getEtiquetas().stream()
+                    .map(pe -> new EtiquetaDTO(pe.getEtiqueta().getId(),pe.getEtiqueta().getNombre()))
+                    .collect(Collectors.toList());
+
+            publicacionDTO.setEtiquetas(etiquetas);
+
             publicacionDTOList.add(publicacionDTO);
         }
 
@@ -190,6 +200,7 @@ public class PublicacionService implements IPublicacionService {
 
     public List<PublicacionDTO> convertirAListaDTO(List<Publicacion> publicaciones) {
         List<PublicacionDTO> publicacionDTOList = new ArrayList<>();
+
         for (Publicacion publicacion : publicaciones) {
             PublicacionDTO publicacionDTO = new PublicacionDTO();
             publicacionDTO.setId(publicacion.getId());
@@ -204,6 +215,20 @@ public class PublicacionService implements IPublicacionService {
             publicacionDTO.setUsuarioId(publicacion.getUsuario().getId());
             publicacionDTO.setUsername(publicacion.getUsuario().getUsername());
             publicacionDTOList.add(publicacionDTO);
+
+            List<IngredienteDTO> ingredientes = publicacion.getIngredientes().stream()
+                    .map(pi -> new IngredienteDTO(pi.getIngrediente().getNombre(), pi.getCantidad(), pi.getTipoCantidad()))
+                    .collect(Collectors.toList());
+
+            publicacionDTO.setIngredientes(ingredientes);
+
+            List<EtiquetaDTO> etiquetas = publicacion.getEtiquetas().stream()
+                    .map(pe -> new EtiquetaDTO(pe.getEtiqueta().getId(),pe.getEtiqueta().getNombre()))
+                    .collect(Collectors.toList());
+
+            publicacionDTO.setEtiquetas(etiquetas);
+
+            System.out.println("Nombre de la publicacion: " + publicacionDTO.getTitulo() + "Ingredientes: " + publicacionDTO.getIngredientes());
         }
         return publicacionDTOList;
     }
@@ -268,6 +293,18 @@ public class PublicacionService implements IPublicacionService {
             publicacionDTO.setUsuarioId(publicacion.getUsuario().getId());
             publicacionDTO.setUsername(publicacion.getUsuario().getUsername());
             publicacionDTOList.add(publicacionDTO);
+
+            List<IngredienteDTO> ingredientes = publicacion.getIngredientes().stream()
+                    .map(pi -> new IngredienteDTO(pi.getIngrediente().getNombre(), pi.getCantidad(), pi.getTipoCantidad()))
+                    .collect(Collectors.toList());
+
+            publicacionDTO.setIngredientes(ingredientes);
+
+            List<EtiquetaDTO> etiquetas = publicacion.getEtiquetas().stream()
+                    .map(pe -> new EtiquetaDTO(pe.getEtiqueta().getId(),pe.getEtiqueta().getNombre()))
+                    .collect(Collectors.toList());
+
+            publicacionDTO.setEtiquetas(etiquetas);
         }
         return publicacionDTOList;
     }

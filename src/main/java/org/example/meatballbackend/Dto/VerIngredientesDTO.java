@@ -3,15 +3,12 @@ package org.example.meatballbackend.Dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.meatballbackend.Enums.TipoCantidad;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class IngredienteDTO {
+public class VerIngredientesDTO {
+    private int id;
     private String nombre;
-    private int cantidad;
-    private TipoCantidad unidad;
-
 
 }

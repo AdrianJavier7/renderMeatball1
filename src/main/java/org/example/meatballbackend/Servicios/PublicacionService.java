@@ -3,16 +3,16 @@ package org.example.meatballbackend.Servicios;
 import org.example.meatballbackend.Dto.PerfilDTO;
 import org.example.meatballbackend.Dto.ComentarioDTO;
 import org.example.meatballbackend.Dto.ComentarioRecibidoDTO;
+import org.example.meatballbackend.Dto.IngredienteDTO;
 import org.example.meatballbackend.Dto.PublicacionDTO;
 import org.example.meatballbackend.Entidades.Comentario;
 import org.example.meatballbackend.Entidades.Perfil;
 import org.example.meatballbackend.Entidades.Publicacion;
 import org.example.meatballbackend.Entidades.Usuario;
+import org.example.meatballbackend.Dto.VerIngredientesDTO;
+import org.example.meatballbackend.Entidades.*;
 import org.example.meatballbackend.Enums.Rol;
-import org.example.meatballbackend.Repositorios.ComentarioRepository;
-import org.example.meatballbackend.Repositorios.EtiquetaRepository;
-import org.example.meatballbackend.Repositorios.PublicacionRepository;
-import org.example.meatballbackend.Repositorios.UsuarioRepository;
+import org.example.meatballbackend.Repositorios.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,10 +40,67 @@ public class PublicacionService implements IPublicacionService {
 
     @Autowired
     private ComentarioRepository comentarioRepository;
+    @Autowired
+    private IngredienteRepository ingredienteRepository;
+
 
     // Crear una publicación
     @Override
-    public Publicacion crearPublicacion(Publicacion publicacion) {
+    public Publicacion crearPublicacion(PublicacionDTO publicacionDTO) {
+        Publicacion publicacion = new Publicacion();
+        publicacion.setTitulo(publicacionDTO.getTitulo());
+        publicacion.setImagenLink(publicacionDTO.getImagenLink());
+        publicacion.setDescripcion(publicacionDTO.getDescripcion());
+        publicacion.setReceta(publicacionDTO.getReceta());
+        publicacion.setDificultad(publicacionDTO.getDificultad());
+        publicacion.setTiempoPreparacion(publicacionDTO.getTiempoPreparacion());
+        publicacion.setTiempoCoccion(publicacionDTO.getTiempoCoccion());
+        publicacion.setRaciones(publicacionDTO.getRaciones());
+
+        Usuario usuario = usuarioRepository.findById(publicacionDTO.getUsuarioId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        publicacion.setUsuario(usuario);
+
+        if (publicacionDTO.getIngredientes() != null) {
+            List<PublicacionIngrediente> publicacionIngredientes = new ArrayList<>();
+            for (IngredienteDTO ingredienteDTO : publicacionDTO.getIngredientes()) {
+                Ingrediente ingrediente = ingredienteRepository.findByNombre(ingredienteDTO.getNombre())
+                        .orElseGet(() -> {
+                            Ingrediente newIngrediente = new Ingrediente();
+                            newIngrediente.setNombre(ingredienteDTO.getNombre());
+                            return ingredienteRepository.save(newIngrediente);
+                        });
+
+                PublicacionIngrediente publicacionIngrediente = new PublicacionIngrediente();
+                publicacionIngrediente.setIngrediente(ingrediente);
+                publicacionIngrediente.setNombre(ingrediente.getNombre());
+                publicacionIngrediente.setCantidad(ingredienteDTO.getCantidad());
+                publicacionIngrediente.setTipoCantidad(ingredienteDTO.getUnidad());
+                publicacionIngrediente.setPublicacion(publicacion);
+                publicacionIngredientes.add(publicacionIngrediente);
+            }
+            publicacion.setIngredientes(publicacionIngredientes);
+        }
+
+        if (publicacionDTO.getEtiquetas() != null) {
+            List<PublicacionEtiqueta> publicacionEtiquetas = publicacionDTO.getEtiquetas().stream().map(etiquetaDTO -> {
+                Etiqueta etiqueta = etiquetaRepository.findByNombre(etiquetaDTO.getNombre())
+                        .orElseGet(() -> {
+                            Etiqueta newEtiqueta = new Etiqueta();
+                            newEtiqueta.setNombre(etiquetaDTO.getNombre());
+                            return etiquetaRepository.save(newEtiqueta);
+                        });
+
+                PublicacionEtiqueta publicacionEtiqueta = new PublicacionEtiqueta();
+                publicacionEtiqueta.setEtiqueta(etiqueta);
+                publicacionEtiqueta.setNombre(etiqueta.getNombre());
+                publicacionEtiqueta.setPublicacion(publicacion);
+                return publicacionEtiqueta;
+            }).collect(Collectors.toList());
+
+            publicacion.setEtiquetas(publicacionEtiquetas);
+        }
+
         return publicacionRepository.save(publicacion);
     }
 
@@ -266,4 +323,46 @@ public class PublicacionService implements IPublicacionService {
         return convertirAListaDTO(publicacionesAleatorias);
     }
 
+
+
+    // Obtener todos los ingredientes de todas las publicaciones
+    public List<String> getIngredientes(Perfil perfil) {
+        List<Ingrediente> ingredientes = ingredienteRepository.findAll();
+        List<String> listaDTO = new ArrayList<>();
+
+        for (Ingrediente ingrediente : ingredientes) {
+            listaDTO.add(ingrediente.getNombre());
+        }
+
+        return listaDTO;
+    }
+
+
+    // Obtener todas las etiquetas de todas las publicaciones
+    public List<String> getEtiquetas(Perfil perfil) {
+        List<Etiqueta> etiquetas = etiquetaRepository.findAll();
+        List<String> listaDTO = new ArrayList<>();
+
+        for (Etiqueta etiqueta : etiquetas) {
+            listaDTO.add(etiqueta.getNombre());
+        }
+
+        return listaDTO;
+    }
+
+
+    // Eliminar un ingrediente de una publicación
+    public boolean eliminarIngrediente(int idPublicacion, Perfil perfil, String ingrediente) {
+        Optional<Publicacion> publicacionOpt = publicacionRepository.findById(idPublicacion);
+
+        if (publicacionOpt.isPresent()) {
+            Publicacion publicacion = publicacionOpt.get();
+            boolean removed = publicacion.getIngredientes().remove(ingrediente);
+            if (removed) {
+                publicacionRepository.save(publicacion);
+                return true;
+            }
+        }
+        return false;
+    }
 }

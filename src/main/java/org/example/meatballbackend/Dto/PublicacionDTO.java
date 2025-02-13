@@ -1,14 +1,17 @@
 package org.example.meatballbackend.Dto;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.example.meatballbackend.Enums.Dificultad;
 import org.example.meatballbackend.Enums.Estado;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PublicacionDTO {
     private Integer id;
     private String titulo;
@@ -20,7 +23,8 @@ public class PublicacionDTO {
     private int tiempoCoccion;
     private int raciones;
     private Integer usuarioId;
-
     private String username;
+    private List<IngredienteDTO> ingredientes = new ArrayList<>();
+    private List<EtiquetaDTO> etiquetas = new ArrayList<>();
     private String fotoPerfilLink;
 }

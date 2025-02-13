@@ -23,13 +23,4 @@ public class Etiqueta {
 
     @Column(name = "nombre")
     private String nombre;
-
-    @ManyToMany
-    @JoinTable(
-            name = "Publicacion_Etiqueta",
-            joinColumns = @JoinColumn(name = "id_etiqueta", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "id_publicacion", referencedColumnName = "id")
-    )
-    private List<Publicacion> publicaciones;
-
 }

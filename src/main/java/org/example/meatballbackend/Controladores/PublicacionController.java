@@ -49,4 +49,37 @@ public class PublicacionController {
         return publicacionService.comentar(perfiLogueado, comentarioDTO);
     }
 
+
+
+    // Obtener todos los ingredientes
+    @GetMapping("/ingredientes")
+    public List<String> getIngredientes(@RequestHeader("Authorization") String token) {
+        Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        return publicacionService.getIngredientes(perfilLogueado);
+    }
+
+    // Obtener las etiquetas
+    @GetMapping("/etiquetas")
+    public List<String> getEtiquetas(@RequestHeader("Authorization") String token) {
+        Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        return publicacionService.getEtiquetas(perfilLogueado);
+    }
+
+
+    // Eliminar un ingrediente de una publicación
+    @DeleteMapping("/{id}/ingrediente")
+    public String eliminarIngrediente(@PathVariable int id, @RequestParam String ingrediente, @RequestHeader("Authorization") String token) {
+        Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        boolean eliminado = publicacionService.eliminarIngrediente(id, perfilLogueado, ingrediente);
+        return eliminado ? "Ingrediente eliminado correctamente." : "No se pudo eliminar el ingrediente.";
+    }
+
+
+    @PostMapping("/agregar")
+    public Publicacion agregarPublicacion(@RequestBody PublicacionDTO publicacionDTO, @RequestHeader("Authorization") String token) {
+        Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        publicacionDTO.setUsuarioId(perfilLogueado.getUsuario().getId());
+        return publicacionService.crearPublicacion(publicacionDTO);
+    }
+
 }

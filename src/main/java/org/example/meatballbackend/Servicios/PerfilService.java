@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PerfilService implements IPerfilService {
@@ -73,7 +74,6 @@ public class PerfilService implements IPerfilService {
         return miPerfilDTO(perfilActualizado);
     }
 
-
     public PerfilDTO miPerfilDTO(Perfil perfil){
         PerfilDTO dto = new PerfilDTO();
         dto.setNombre(perfil.getNombre());
@@ -84,5 +84,15 @@ public class PerfilService implements IPerfilService {
         dto.setUsername(perfil.getUsername());
         dto.setId(perfil.getId());
         return dto;
+    }
+
+    public int contarSeguidos(int usuarioId) {
+        Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
+        Usuario usuario = usuarioOpt.orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        return usuario.getSeguidos().size();
+    }
+
+    public int contarSeguidores(Integer usuarioId) {
+        return usuarioRepository.contarTotalSeguidores(usuarioId);
     }
 }

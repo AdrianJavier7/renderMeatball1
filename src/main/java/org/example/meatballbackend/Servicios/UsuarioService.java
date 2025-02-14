@@ -117,5 +117,4 @@ public class UsuarioService implements UserDetailsService {
     public Usuario obtenerUsuarioPorId(int id) {
         return usuarioRepository.findById(id).orElse(null);
     }
-
 }

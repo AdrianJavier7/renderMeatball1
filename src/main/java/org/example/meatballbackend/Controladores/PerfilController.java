@@ -60,4 +60,14 @@ public class PerfilController {
     public List<PublicacionDTO> getPublicacionesPorUsuarioId(@PathVariable Integer idUsuario) {
         return publiconService.getPublicacionesPorUsuarioId(idUsuario);
     }
+
+    @GetMapping("/seguidos/{id}")
+    public int contarSeguidos(@PathVariable Integer id) {
+        return perfilService.contarSeguidos(id);
+    }
+
+    @GetMapping("/seguidores/{id}")
+    public int contarSeguidores(@PathVariable Integer id) {
+        return perfilService.contarSeguidores(id);
+    }
 }

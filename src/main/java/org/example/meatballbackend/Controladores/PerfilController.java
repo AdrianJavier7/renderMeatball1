@@ -70,4 +70,16 @@ public class PerfilController {
     public int contarSeguidores(@PathVariable Integer id) {
         return perfilService.contarSeguidores(id);
     }
+
+    @GetMapping("/seguidosPerfil")
+    public int contarSeguidosPerfil(@RequestHeader("Authorization") String token) {
+        Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        return perfilService.contarSeguidos(perfilLogueado.getUsuario().getId());
+    }
+
+    @GetMapping("/seguidoresPerfil")
+    public int contarSeguidoresPerfil(@RequestHeader("Authorization") String token) {
+        Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        return perfilService.contarSeguidores(perfilLogueado.getUsuario().getId());
+    }
 }

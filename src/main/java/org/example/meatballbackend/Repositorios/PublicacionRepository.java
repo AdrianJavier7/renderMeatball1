@@ -29,5 +29,13 @@ public interface PublicacionRepository extends JpaRepository<Publicacion, Intege
 
     List<Publicacion> findByUsuarioIdIn(List<Integer> usuarioIds);
 
+    @Query("SELECT DISTINCT p FROM Publicacion p " +
+            "LEFT JOIN p.ingredientes i " +
+            "LEFT JOIN p.etiquetas e " +
+            "WHERE (:ingredientes IS NULL OR i.nombre IN :ingredientes) " +
+            "AND (:etiquetas IS NULL OR e.nombre IN :etiquetas)")
+    List<Publicacion> findByIngredientesOrEtiquetas(@Param("ingredientes") List<String> ingredientes,
+                                                    @Param("etiquetas") List<String> etiquetas);
+
 
 }

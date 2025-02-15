@@ -112,4 +112,11 @@ public class PublicacionController {
         return publicacionService.crearPublicacion(publicacionDTO);
     }
 
+    @GetMapping("/buscar")
+    public List<PublicacionDTO> buscarPublicaciones(
+            @RequestParam(required = false) List<String> ingredientes,
+            @RequestParam(required = false) List<String> etiquetas) {
+        return publicacionService.getPublicacionesPorIngredientesOEtiquetas(ingredientes, etiquetas);
+    }
+
 }

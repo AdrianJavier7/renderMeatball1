@@ -411,4 +411,42 @@ public class PublicacionService implements IPublicacionService {
         }
         return false;
     }
+
+    public List<PublicacionDTO> getPublicacionesPorIngredientesOEtiquetas(List<String> ingredientes, List<String> etiquetas) {
+        if ((ingredientes == null || ingredientes.isEmpty()) && (etiquetas == null || etiquetas.isEmpty())) {
+            throw new IllegalArgumentException("Debe proporcionar al menos un ingrediente o una etiqueta");
+        }
+        List<Publicacion> publicaciones = publicacionRepository.findByIngredientesOrEtiquetas(
+                (ingredientes == null || ingredientes.isEmpty()) ? null : ingredientes,
+                (etiquetas == null || etiquetas.isEmpty()) ? null : etiquetas
+        );
+        return publicaciones.stream().map(this::convertirADTO).collect(Collectors.toList());
+    }
+
+    private PublicacionDTO convertirADTO(Publicacion publicacion) {
+        PublicacionDTO dto = new PublicacionDTO();
+        dto.setId(publicacion.getId());
+        dto.setTitulo(publicacion.getTitulo());
+        dto.setImagenLink(publicacion.getImagenLink());
+        dto.setDescripcion(publicacion.getDescripcion());
+        dto.setReceta(publicacion.getReceta());
+        dto.setDificultad(publicacion.getDificultad());
+        dto.setTiempoPreparacion(publicacion.getTiempoPreparacion());
+        dto.setTiempoCoccion(publicacion.getTiempoCoccion());
+        dto.setRaciones(publicacion.getRaciones());
+        dto.setUsuarioId(publicacion.getUsuario().getId());
+        dto.setUsername(publicacion.getUsuario().getUsername());
+
+        List<IngredienteDTO> ingredientes = publicacion.getIngredientes().stream()
+                .map(pi -> new IngredienteDTO(pi.getIngrediente().getNombre(), pi.getCantidad(), pi.getTipoCantidad()))
+                .collect(Collectors.toList());
+        dto.setIngredientes(ingredientes);
+
+        List<EtiquetaDTO> etiquetas = publicacion.getEtiquetas().stream()
+                .map(pe -> new EtiquetaDTO(pe.getEtiqueta().getId(), pe.getEtiqueta().getNombre()))
+                .collect(Collectors.toList());
+        dto.setEtiquetas(etiquetas);
+
+        return dto;
+    }
 }

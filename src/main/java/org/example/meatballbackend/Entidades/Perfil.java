@@ -3,6 +3,8 @@ package org.example.meatballbackend.Entidades;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.meatballbackend.Enums.Estado;
+
 @Entity
 @Table(name = "Perfil", schema = "meatball" , catalog = "postgres")
 @Getter
@@ -32,8 +34,9 @@ public class Perfil {
     @Column(name = "telefono")
     private String telefono;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "estado")
-    private String estado;
+    private Estado estado;
 
     @Column(name = "username", unique = true)
     private String username;

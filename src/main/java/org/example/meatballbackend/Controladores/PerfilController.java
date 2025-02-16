@@ -66,4 +66,22 @@ public class PerfilController {
         Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
         return perfilService.isAdmin(perfilLogueado);
     }
+
+    @PostMapping("/setActivo/{id}")
+    public PerfilDTO setActivo(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
+        Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        return perfilService.setActivo(id);
+    }
+
+    @PostMapping("/setBaneado/{id}")
+    public PerfilDTO setBaneado(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
+        Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        return perfilService.setBaneado(id);
+    }
+
+    @PostMapping("/setPendienteRevision/{id}")
+    public PerfilDTO setPendienteRevision(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
+        Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        return perfilService.setPendienteRevision(id);
+    }
 }

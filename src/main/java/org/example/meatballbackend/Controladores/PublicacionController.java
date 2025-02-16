@@ -66,4 +66,22 @@ public class PublicacionController {
         return publicacionService.getComentarios(idPublicacion);
     }
 
+    @PostMapping("/setActiva/{idPublicacion}")
+    public void setActiva(@PathVariable int idPublicacion, @RequestHeader("Authorization") String token) {
+        Perfil perfiLogueado = jwtService.extraerPerfilToken(token);
+        publicacionService.setActivo(idPublicacion);
+    }
+
+    @PostMapping("/setBaneada/{idPublicacion}")
+    public void setBaneada(@PathVariable int idPublicacion, @RequestHeader("Authorization") String token) {
+        Perfil perfiLogueado = jwtService.extraerPerfilToken(token);
+        publicacionService.setBaneado(idPublicacion);
+    }
+
+    @PostMapping("setPendiente/{idPublicacion}")
+    public void setPendiente(@PathVariable int idPublicacion, @RequestHeader("Authorization") String token) {
+        Perfil perfiLogueado = jwtService.extraerPerfilToken(token);
+        publicacionService.setPendienteRevision(idPublicacion);
+    }
+
 }

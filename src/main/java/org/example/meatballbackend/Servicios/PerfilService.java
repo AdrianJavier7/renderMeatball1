@@ -3,6 +3,7 @@ package org.example.meatballbackend.Servicios;
 import org.example.meatballbackend.Dto.PerfilDTO;
 import org.example.meatballbackend.Entidades.Perfil;
 import org.example.meatballbackend.Entidades.Usuario;
+import org.example.meatballbackend.Enums.Estado;
 import org.example.meatballbackend.Enums.Rol;
 import org.example.meatballbackend.Repositorios.PerfilRepository;
 import org.example.meatballbackend.Repositorios.UsuarioRepository;
@@ -51,6 +52,7 @@ public class PerfilService implements IPerfilService {
             dto.setFotoPerfilLink(p.getFotoPerfilLink());
             dto.setEmail(p.getEmail());
             dto.setTelefono(p.getTelefono());
+            dto.setEstado(String.valueOf(p.getEstado()));
             perfilDTOS.add(dto);
         }
 
@@ -82,6 +84,7 @@ public class PerfilService implements IPerfilService {
         dto.setFotoPerfilLink(perfil.getFotoPerfilLink());
         dto.setEmail(perfil.getEmail());
         dto.setTelefono(perfil.getTelefono());
+        dto.setEstado(String.valueOf(perfil.getEstado()));
         dto.setUsername(perfil.getUsername());
         dto.setId(perfil.getId());
         return dto;
@@ -90,4 +93,29 @@ public class PerfilService implements IPerfilService {
     public boolean isAdmin(Perfil perfil){
         return perfil.getUsuario().getRol() == Rol.Admin;
     }
+
+    public PerfilDTO setActivo(Integer id){
+        Perfil perfil = perfilRepository.findById(id).orElseThrow();
+        perfil.setEstado(Estado.Activo);
+        perfil.getUsuario().setEstado(Estado.Activo);
+        perfilRepository.save(perfil);
+        return miPerfilDTO(perfil);
+    }
+
+    public PerfilDTO setBaneado(Integer id){
+        Perfil perfil = perfilRepository.findById(id).orElseThrow();
+        perfil.setEstado(Estado.Baneado);
+        perfil.getUsuario().setEstado(Estado.Baneado);
+        perfilRepository.save(perfil);
+        return miPerfilDTO(perfil);
+    }
+
+    public PerfilDTO setPendienteRevision(Integer id){
+        Perfil perfil = perfilRepository.findById(id).orElseThrow();
+        perfil.setEstado(Estado.Pendiente_revision);
+        perfil.getUsuario().setEstado(Estado.Pendiente_revision);
+        perfilRepository.save(perfil);
+        return miPerfilDTO(perfil);
+    }
+
 }

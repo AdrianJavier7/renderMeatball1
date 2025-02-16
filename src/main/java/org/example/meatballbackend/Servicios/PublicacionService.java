@@ -6,6 +6,7 @@ import org.example.meatballbackend.Entidades.Perfil;
 import org.example.meatballbackend.Entidades.Publicacion;
 import org.example.meatballbackend.Entidades.Usuario;
 import org.example.meatballbackend.Entidades.*;
+import org.example.meatballbackend.Enums.Estado;
 import org.example.meatballbackend.Enums.Rol;
 import org.example.meatballbackend.Repositorios.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,6 @@ public class PublicacionService implements IPublicacionService {
     private PerfilRepository perfilRepository;
 
 
-    // Crear una publicación
     @Override
     public Publicacion crearPublicacion(PublicacionDTO publicacionDTO) {
         Publicacion publicacion = new Publicacion();
@@ -54,6 +54,7 @@ public class PublicacionService implements IPublicacionService {
         publicacion.setTiempoPreparacion(publicacionDTO.getTiempoPreparacion());
         publicacion.setTiempoCoccion(publicacionDTO.getTiempoCoccion());
         publicacion.setRaciones(publicacionDTO.getRaciones());
+        publicacion.setEstado(Estado.Activo);
 
         Usuario usuario = usuarioRepository.findById(publicacionDTO.getUsuarioId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -137,42 +138,42 @@ public class PublicacionService implements IPublicacionService {
         }
     }
 
-    public List<PublicacionDTO> getPublicacionesParaTi (Perfil perfil){
+    public List<PublicacionDTO> getPublicacionesParaTi(Perfil perfil) {
         List<Publicacion> publicaciones = publicacionRepository.findAllExceptByUsuario(perfil.getUsuario());
         List<PublicacionDTO> publicacionDTOList = new ArrayList<>();
 
-
         for (Publicacion publicacion : publicaciones) {
-            PublicacionDTO publicacionDTO = new PublicacionDTO();
-            publicacionDTO.setId(publicacion.getId());
-            publicacionDTO.setTitulo(publicacion.getTitulo());
-            publicacionDTO.setImagenLink(publicacion.getImagenLink());
-            publicacionDTO.setDescripcion(publicacion.getDescripcion());
-            publicacionDTO.setReceta(publicacion.getReceta());
-            publicacionDTO.setDificultad(publicacion.getDificultad());
-            publicacionDTO.setTiempoPreparacion(publicacion.getTiempoPreparacion());
-            publicacionDTO.setTiempoCoccion(publicacion.getTiempoCoccion());
-            publicacionDTO.setRaciones(publicacion.getRaciones());
-            publicacionDTO.setUsuarioId(publicacion.getUsuario().getId());
-            publicacionDTO.setUsername(publicacion.getUsuario().getUsername());
+            if (publicacion.getEstado() == Estado.Activo || publicacion.getEstado() == Estado.Pendiente_revision) {
+                PublicacionDTO publicacionDTO = new PublicacionDTO();
+                publicacionDTO.setId(publicacion.getId());
+                publicacionDTO.setTitulo(publicacion.getTitulo());
+                publicacionDTO.setImagenLink(publicacion.getImagenLink());
+                publicacionDTO.setDescripcion(publicacion.getDescripcion());
+                publicacionDTO.setReceta(publicacion.getReceta());
+                publicacionDTO.setDificultad(publicacion.getDificultad());
+                publicacionDTO.setTiempoPreparacion(publicacion.getTiempoPreparacion());
+                publicacionDTO.setTiempoCoccion(publicacion.getTiempoCoccion());
+                publicacionDTO.setRaciones(publicacion.getRaciones());
+                publicacionDTO.setUsuarioId(publicacion.getUsuario().getId());
+                publicacionDTO.setUsername(publicacion.getUsuario().getUsername());
 
+                List<IngredienteDTO> ingredientes = publicacion.getIngredientes().stream()
+                        .map(pi -> new IngredienteDTO(pi.getIngrediente().getNombre(), pi.getCantidad(), pi.getTipoCantidad()))
+                        .collect(Collectors.toList());
 
-            List<IngredienteDTO> ingredientes = publicacion.getIngredientes().stream()
-                    .map(pi -> new IngredienteDTO(pi.getIngrediente().getNombre(), pi.getCantidad(), pi.getTipoCantidad()))
-                    .collect(Collectors.toList());
+                publicacionDTO.setIngredientes(ingredientes);
 
-            publicacionDTO.setIngredientes(ingredientes);
+                List<EtiquetaDTO> etiquetas = publicacion.getEtiquetas().stream()
+                        .map(pe -> new EtiquetaDTO(pe.getEtiqueta().getId(), pe.getEtiqueta().getNombre()))
+                        .collect(Collectors.toList());
 
-            List<EtiquetaDTO> etiquetas = publicacion.getEtiquetas().stream()
-                    .map(pe -> new EtiquetaDTO(pe.getEtiqueta().getId(),pe.getEtiqueta().getNombre()))
-                    .collect(Collectors.toList());
+                publicacionDTO.setEtiquetas(etiquetas);
 
-            publicacionDTO.setEtiquetas(etiquetas);
-
-            publicacionDTOList.add(publicacionDTO);
+                publicacionDTOList.add(publicacionDTO);
+            }
         }
 
-        return  publicacionDTOList;
+        return publicacionDTOList;
     }
 
     public List<PublicacionDTO> getAll() {
@@ -180,19 +181,21 @@ public class PublicacionService implements IPublicacionService {
         List<PublicacionDTO> publicacionDTOS = new ArrayList<>();
 
         for (Publicacion p : publicaciones) {
-            PublicacionDTO dto = new PublicacionDTO();
-            dto.setId(p.getId());
-            dto.setUsuarioId(p.getUsuario().getId());
-            dto.setUsername(p.getUsuario().getUsername());
+            if (p.getEstado() == Estado.Activo || p.getEstado() == Estado.Pendiente_revision) {
+                PublicacionDTO dto = new PublicacionDTO();
+                dto.setId(p.getId());
+                dto.setUsuarioId(p.getUsuario().getId());
+                dto.setUsername(p.getUsuario().getUsername());
 
-            Perfil perfil = p.getPerfil();
-            if (perfil != null) {
-                dto.setFotoPerfilLink(perfil.getFotoPerfilLink());
-            } else {
-                dto.setFotoPerfilLink(null);
+                Perfil perfil = p.getPerfil();
+                if (perfil != null) {
+                    dto.setFotoPerfilLink(perfil.getFotoPerfilLink());
+                } else {
+                    dto.setFotoPerfilLink(null);
+                }
+
+                publicacionDTOS.add(dto);
             }
-
-            publicacionDTOS.add(dto);
         }
 
         return publicacionDTOS;
@@ -202,33 +205,35 @@ public class PublicacionService implements IPublicacionService {
         List<PublicacionDTO> publicacionDTOList = new ArrayList<>();
 
         for (Publicacion publicacion : publicaciones) {
-            PublicacionDTO publicacionDTO = new PublicacionDTO();
-            publicacionDTO.setId(publicacion.getId());
-            publicacionDTO.setTitulo(publicacion.getTitulo());
-            publicacionDTO.setImagenLink(publicacion.getImagenLink());
-            publicacionDTO.setDescripcion(publicacion.getDescripcion());
-            publicacionDTO.setReceta(publicacion.getReceta());
-            publicacionDTO.setDificultad(publicacion.getDificultad());
-            publicacionDTO.setTiempoPreparacion(publicacion.getTiempoPreparacion());
-            publicacionDTO.setTiempoCoccion(publicacion.getTiempoCoccion());
-            publicacionDTO.setRaciones(publicacion.getRaciones());
-            publicacionDTO.setUsuarioId(publicacion.getUsuario().getId());
-            publicacionDTO.setUsername(publicacion.getUsuario().getUsername());
-            publicacionDTOList.add(publicacionDTO);
+            if (publicacion.getEstado() == Estado.Activo || publicacion.getEstado() == Estado.Pendiente_revision) {
+                PublicacionDTO publicacionDTO = new PublicacionDTO();
+                publicacionDTO.setId(publicacion.getId());
+                publicacionDTO.setTitulo(publicacion.getTitulo());
+                publicacionDTO.setImagenLink(publicacion.getImagenLink());
+                publicacionDTO.setDescripcion(publicacion.getDescripcion());
+                publicacionDTO.setReceta(publicacion.getReceta());
+                publicacionDTO.setDificultad(publicacion.getDificultad());
+                publicacionDTO.setTiempoPreparacion(publicacion.getTiempoPreparacion());
+                publicacionDTO.setTiempoCoccion(publicacion.getTiempoCoccion());
+                publicacionDTO.setRaciones(publicacion.getRaciones());
+                publicacionDTO.setUsuarioId(publicacion.getUsuario().getId());
+                publicacionDTO.setUsername(publicacion.getUsuario().getUsername());
+                publicacionDTOList.add(publicacionDTO);
 
-            List<IngredienteDTO> ingredientes = publicacion.getIngredientes().stream()
-                    .map(pi -> new IngredienteDTO(pi.getIngrediente().getNombre(), pi.getCantidad(), pi.getTipoCantidad()))
-                    .collect(Collectors.toList());
+                List<IngredienteDTO> ingredientes = publicacion.getIngredientes().stream()
+                        .map(pi -> new IngredienteDTO(pi.getIngrediente().getNombre(), pi.getCantidad(), pi.getTipoCantidad()))
+                        .collect(Collectors.toList());
 
-            publicacionDTO.setIngredientes(ingredientes);
+                publicacionDTO.setIngredientes(ingredientes);
 
-            List<EtiquetaDTO> etiquetas = publicacion.getEtiquetas().stream()
-                    .map(pe -> new EtiquetaDTO(pe.getEtiqueta().getId(),pe.getEtiqueta().getNombre()))
-                    .collect(Collectors.toList());
+                List<EtiquetaDTO> etiquetas = publicacion.getEtiquetas().stream()
+                        .map(pe -> new EtiquetaDTO(pe.getEtiqueta().getId(), pe.getEtiqueta().getNombre()))
+                        .collect(Collectors.toList());
 
-            publicacionDTO.setEtiquetas(etiquetas);
+                publicacionDTO.setEtiquetas(etiquetas);
 
-            System.out.println("Nombre de la publicacion: " + publicacionDTO.getTitulo() + "Ingredientes: " + publicacionDTO.getIngredientes());
+                System.out.println("Nombre de la publicacion: " + publicacionDTO.getTitulo() + "Ingredientes: " + publicacionDTO.getIngredientes());
+            }
         }
         return publicacionDTOList;
     }
@@ -280,31 +285,33 @@ public class PublicacionService implements IPublicacionService {
         List<PublicacionDTO> publicacionDTOList = new ArrayList<>();
 
         for (Publicacion publicacion : publicaciones) {
-            PublicacionDTO publicacionDTO = new PublicacionDTO();
-            publicacionDTO.setId(publicacion.getId());
-            publicacionDTO.setTitulo(publicacion.getTitulo());
-            publicacionDTO.setImagenLink(publicacion.getImagenLink());
-            publicacionDTO.setDescripcion(publicacion.getDescripcion());
-            publicacionDTO.setReceta(publicacion.getReceta());
-            publicacionDTO.setDificultad(publicacion.getDificultad());
-            publicacionDTO.setTiempoPreparacion(publicacion.getTiempoPreparacion());
-            publicacionDTO.setTiempoCoccion(publicacion.getTiempoCoccion());
-            publicacionDTO.setRaciones(publicacion.getRaciones());
-            publicacionDTO.setUsuarioId(publicacion.getUsuario().getId());
-            publicacionDTO.setUsername(publicacion.getUsuario().getUsername());
-            publicacionDTOList.add(publicacionDTO);
+            if (publicacion.getEstado() == Estado.Activo || publicacion.getEstado() == Estado.Pendiente_revision) {
+                PublicacionDTO publicacionDTO = new PublicacionDTO();
+                publicacionDTO.setId(publicacion.getId());
+                publicacionDTO.setTitulo(publicacion.getTitulo());
+                publicacionDTO.setImagenLink(publicacion.getImagenLink());
+                publicacionDTO.setDescripcion(publicacion.getDescripcion());
+                publicacionDTO.setReceta(publicacion.getReceta());
+                publicacionDTO.setDificultad(publicacion.getDificultad());
+                publicacionDTO.setTiempoPreparacion(publicacion.getTiempoPreparacion());
+                publicacionDTO.setTiempoCoccion(publicacion.getTiempoCoccion());
+                publicacionDTO.setRaciones(publicacion.getRaciones());
+                publicacionDTO.setUsuarioId(publicacion.getUsuario().getId());
+                publicacionDTO.setUsername(publicacion.getUsuario().getUsername());
+                publicacionDTOList.add(publicacionDTO);
 
-            List<IngredienteDTO> ingredientes = publicacion.getIngredientes().stream()
-                    .map(pi -> new IngredienteDTO(pi.getIngrediente().getNombre(), pi.getCantidad(), pi.getTipoCantidad()))
-                    .collect(Collectors.toList());
+                List<IngredienteDTO> ingredientes = publicacion.getIngredientes().stream()
+                        .map(pi -> new IngredienteDTO(pi.getIngrediente().getNombre(), pi.getCantidad(), pi.getTipoCantidad()))
+                        .collect(Collectors.toList());
 
-            publicacionDTO.setIngredientes(ingredientes);
+                publicacionDTO.setIngredientes(ingredientes);
 
-            List<EtiquetaDTO> etiquetas = publicacion.getEtiquetas().stream()
-                    .map(pe -> new EtiquetaDTO(pe.getEtiqueta().getId(),pe.getEtiqueta().getNombre()))
-                    .collect(Collectors.toList());
+                List<EtiquetaDTO> etiquetas = publicacion.getEtiquetas().stream()
+                        .map(pe -> new EtiquetaDTO(pe.getEtiqueta().getId(), pe.getEtiqueta().getNombre()))
+                        .collect(Collectors.toList());
 
-            publicacionDTO.setEtiquetas(etiquetas);
+                publicacionDTO.setEtiquetas(etiquetas);
+            }
         }
         return publicacionDTOList;
     }
@@ -356,19 +363,22 @@ public class PublicacionService implements IPublicacionService {
                 .map(Usuario::getId)
                 .collect(Collectors.toList());
 
-        List<Publicacion> publicaciones = publicacionRepository.findByUsuarioIdIn(seguidosIds);
+        List<Publicacion> publicaciones = publicacionRepository.findByUsuarioIdIn(seguidosIds)
+                .stream()
+                .filter(publicacion -> publicacion.getEstado() == Estado.Activo || publicacion.getEstado() == Estado.Pendiente_revision)
+                .collect(Collectors.toList());
+
         return convertirAListaDTO(publicaciones);
     }
 
     public List<PublicacionDTO> getPublicacionesAleatorias(Perfil perfilLogueado) {
         List<Publicacion> publicaciones = publicacionRepository.findAll().stream()
-                .filter(publicacion -> !publicacion.getUsuario().getId().equals(perfilLogueado.getUsuario().getId()))
+                .filter(publicacion -> !publicacion.getUsuario().getId().equals(perfilLogueado.getUsuario().getId()) && (publicacion.getEstado() == Estado.Activo || publicacion.getEstado() == Estado.Pendiente_revision))
                 .collect(Collectors.toList());
         Collections.shuffle(publicaciones);
         List<Publicacion> publicacionesAleatorias = publicaciones.stream().limit(8).collect(Collectors.toList());
         return convertirAListaDTO(publicacionesAleatorias);
     }
-
 
 
     // Obtener todos los ingredientes de todas las publicaciones
@@ -420,7 +430,10 @@ public class PublicacionService implements IPublicacionService {
                 (ingredientes == null || ingredientes.isEmpty()) ? null : ingredientes,
                 (etiquetas == null || etiquetas.isEmpty()) ? null : etiquetas
         );
-        return publicaciones.stream().map(this::convertirADTO).collect(Collectors.toList());
+        List<Publicacion> publicacionesActivas = publicaciones.stream()
+                .filter(publicacion -> publicacion.getEstado() == Estado.Activo)
+                .collect(Collectors.toList());
+        return publicacionesActivas.stream().map(this::convertirADTO).collect(Collectors.toList());
     }
 
     private PublicacionDTO convertirADTO(Publicacion publicacion) {
@@ -448,5 +461,18 @@ public class PublicacionService implements IPublicacionService {
         dto.setEtiquetas(etiquetas);
 
         return dto;
+    }
+
+    public boolean actualizarEstadoPublicacion(int idPublicacion, Estado nuevoEstado, Perfil perfilLogueado) {
+        Optional<Publicacion> publicacionOpt = publicacionRepository.findById(idPublicacion);
+        if (publicacionOpt.isPresent()) {
+            Publicacion publicacion = publicacionOpt.get();
+            if (publicacion.getUsuario().getId().equals(perfilLogueado.getUsuario().getId())) {
+                publicacion.setEstado(nuevoEstado);
+                publicacionRepository.save(publicacion);
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -3,6 +3,7 @@ package org.example.meatballbackend.Servicios;
 import org.example.meatballbackend.Dto.PerfilDTO;
 import org.example.meatballbackend.Entidades.Perfil;
 import org.example.meatballbackend.Entidades.Usuario;
+import org.example.meatballbackend.Enums.Rol;
 import org.example.meatballbackend.Repositorios.PerfilRepository;
 import org.example.meatballbackend.Repositorios.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,5 +85,9 @@ public class PerfilService implements IPerfilService {
         dto.setUsername(perfil.getUsername());
         dto.setId(perfil.getId());
         return dto;
+    }
+
+    public boolean isAdmin(Perfil perfil){
+        return perfil.getUsuario().getRol() == Rol.Admin;
     }
 }

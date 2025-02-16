@@ -60,4 +60,10 @@ public class PerfilController {
     public List<PublicacionDTO> getPublicacionesPorUsuarioId(@PathVariable Integer idUsuario) {
         return publiconService.getPublicacionesPorUsuarioId(idUsuario);
     }
+
+    @GetMapping("/isAdmin")
+    public Boolean isAdmin(@RequestHeader("Authorization") String token) {
+        Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        return perfilService.isAdmin(perfilLogueado);
+    }
 }

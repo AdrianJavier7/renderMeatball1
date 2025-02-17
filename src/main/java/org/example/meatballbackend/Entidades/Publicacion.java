@@ -67,14 +67,11 @@ public class Publicacion {
             )
     private List<Usuario> likes;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "Etiqueta_Publicacion",
-            joinColumns = @JoinColumn(name = "publicacion_id"),
-            inverseJoinColumns = @JoinColumn(name = "etiqueta_id")
-    )
-    private List<Etiqueta> etiquetas;
 
+    @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PublicacionIngrediente> ingredientes;
 
+    @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PublicacionEtiqueta> etiquetas;
 
 }

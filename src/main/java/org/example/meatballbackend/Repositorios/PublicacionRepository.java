@@ -3,6 +3,7 @@ package org.example.meatballbackend.Repositorios;
 import org.example.meatballbackend.Entidades.Perfil;
 import org.example.meatballbackend.Entidades.Publicacion;
 import org.example.meatballbackend.Entidades.Usuario;
+import org.example.meatballbackend.Enums.Estado;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,5 +30,14 @@ public interface PublicacionRepository extends JpaRepository<Publicacion, Intege
 
     List<Publicacion> findByUsuarioIdIn(List<Integer> usuarioIds);
 
+    @Query("SELECT DISTINCT p FROM Publicacion p " +
+            "LEFT JOIN p.ingredientes i " +
+            "LEFT JOIN p.etiquetas e " +
+            "WHERE (:ingredientes IS NULL OR i.nombre IN :ingredientes) " +
+            "AND (:etiquetas IS NULL OR e.nombre IN :etiquetas)")
+    List<Publicacion> findByIngredientesOrEtiquetas(@Param("ingredientes") List<String> ingredientes,
+                                                    @Param("etiquetas") List<String> etiquetas);
 
+
+    List<Publicacion> findByEstado(Estado estado);
 }

@@ -1,14 +1,14 @@
 package org.example.meatballbackend.Enums;
 
 public enum TipoCantidad {
-    Gramos,
-    Mililitros,
     Unidades,
     Pizca,
+    Kilogramos,
+    Gramos,
+    Miligramos,
+    Litros,
+    Mililitros,
     Cucharada,
     Cucharadita,
     Taza,
-    Litros,
-    Kilogramos,
-    Miligramos,
 }

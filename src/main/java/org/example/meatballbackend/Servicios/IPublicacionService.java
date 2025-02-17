@@ -6,8 +6,9 @@ import org.example.meatballbackend.Entidades.Publicacion;
 import java.util.List;
 
 public interface IPublicacionService {
+
     // Crear una publicación
-    Publicacion crearPublicacion(Publicacion publicacion);
+    Publicacion crearPublicacion(PublicacionDTO publicacionDTO);
 
     // Obtener todas las publicaciones que hay
     List<Publicacion> obtenerPublicaciones();

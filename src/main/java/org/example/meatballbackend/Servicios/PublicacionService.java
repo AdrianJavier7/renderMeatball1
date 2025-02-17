@@ -475,4 +475,10 @@ public class PublicacionService implements IPublicacionService {
         }
         return false;
     }
+
+    public List<PublicacionDTO> getPublicacionesBaneadas() {
+        List<Publicacion> publicaciones = publicacionRepository.findByEstado(Estado.Baneado);
+        return publicaciones.stream().map(this::convertirADTO).collect(Collectors.toList());
+    }
+
 }

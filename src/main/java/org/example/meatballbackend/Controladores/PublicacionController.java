@@ -127,4 +127,9 @@ public class PublicacionController {
         return actualizado ? "Estado actualizado correctamente." : "No se pudo actualizar el estado.";
     }
 
+    @GetMapping("/baneadas")
+    public List<PublicacionDTO> getPublicacionesBaneadas() {
+        return publicacionService.getPublicacionesBaneadas();
+    }
+
 }

@@ -3,6 +3,7 @@ package org.example.meatballbackend.Repositorios;
 import org.example.meatballbackend.Entidades.Perfil;
 import org.example.meatballbackend.Entidades.Publicacion;
 import org.example.meatballbackend.Entidades.Usuario;
+import org.example.meatballbackend.Enums.Estado;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -38,4 +39,5 @@ public interface PublicacionRepository extends JpaRepository<Publicacion, Intege
                                                     @Param("etiquetas") List<String> etiquetas);
 
 
+    List<Publicacion> findByEstado(Estado estado);
 }

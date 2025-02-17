@@ -30,10 +30,10 @@ public class Publicacion {
     @Column(name = "imagen_link")
     private String imagenLink;
 
-    @Column(name = "descripcion")
+    @Column(name = "descripcion", length = 10000)
     private String descripcion;
 
-    @Column(name = "receta")
+    @Column(name = "receta", length = 10000)
     private String receta;
 
     @Enumerated(EnumType.STRING)

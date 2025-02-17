@@ -7,6 +7,7 @@ import org.example.meatballbackend.Dto.PublicacionDTO;
 import org.example.meatballbackend.Entidades.Comentario;
 import org.example.meatballbackend.Entidades.Perfil;
 import org.example.meatballbackend.Entidades.Publicacion;
+import org.example.meatballbackend.Enums.Estado;
 import org.example.meatballbackend.Security.JWTService;
 import org.example.meatballbackend.Servicios.PublicacionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,6 +129,25 @@ public class PublicacionController {
         publicacionDTO.setUsuarioId(perfilLogueado.getUsuario().getId());
         publicacionDTO.setPerfilId(perfilLogueado.getId());
         return publicacionService.crearPublicacion(publicacionDTO);
+    }
+
+    @GetMapping("/buscar")
+    public List<PublicacionDTO> buscarPublicaciones(
+            @RequestParam(required = false) List<String> ingredientes,
+            @RequestParam(required = false) List<String> etiquetas) {
+        return publicacionService.getPublicacionesPorIngredientesOEtiquetas(ingredientes, etiquetas);
+    }
+
+    @PutMapping("/{id}/estado")
+    public String actualizarEstadoPublicacion(@PathVariable int id, @RequestParam Estado nuevoEstado, @RequestHeader("Authorization") String token) {
+        Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        boolean actualizado = publicacionService.actualizarEstadoPublicacion(id, nuevoEstado, perfilLogueado);
+        return actualizado ? "Estado actualizado correctamente." : "No se pudo actualizar el estado.";
+    }
+
+    @GetMapping("/baneadas")
+    public List<PublicacionDTO> getPublicacionesBaneadas() {
+        return publicacionService.getPublicacionesBaneadas();
     }
 
 }

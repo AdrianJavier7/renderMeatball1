@@ -20,7 +20,7 @@ public class PerfilController {
     private PerfilService perfilService;
 
     @Autowired
-    private PublicacionService publiconService;
+    private PublicacionService publicacionService;
 
     @Autowired
     private JWTService jwtService;
@@ -35,7 +35,6 @@ public class PerfilController {
     public PerfilDTO getPerfilById(@PathVariable Integer id){
         return perfilService.getPerfilById(id);
     }
-
 
     @PutMapping("/update")
     public PerfilDTO updatePerfil(@RequestHeader("Authorization") String token, @RequestBody PerfilDTO perfilDTO) {
@@ -53,12 +52,46 @@ public class PerfilController {
     @GetMapping("/misPublicaciones")
     public List<PublicacionDTO> getPublicaciones(@RequestHeader("Authorization") String token) {
         List<Publicacion> publicaciones = jwtService.extraerPublicacionesToken(token);
-        return publiconService.convertirAListaDTO(publicaciones);
+        return publicacionService.convertirAListaDTO(publicaciones);
     }
 
     @GetMapping("/otrasPublicaciones/{idUsuario}")
     public List<PublicacionDTO> getPublicacionesPorUsuarioId(@PathVariable Integer idUsuario) {
-        return publiconService.getPublicacionesPorUsuarioId(idUsuario);
+        return publicacionService.getPublicacionesPorUsuarioId(idUsuario);
+    }
+
+    @GetMapping("/seguidos/{id}")
+    public int contarSeguidos(@PathVariable Integer id) {
+        return perfilService.contarSeguidos(id);
+    }
+
+    @GetMapping("/seguidores/{id}")
+    public int contarSeguidores(@PathVariable Integer id) {
+        return perfilService.contarSeguidores(id);
+    }
+
+    @GetMapping("/seguidosPerfil")
+    public int contarSeguidosPerfil(@RequestHeader("Authorization") String token) {
+        Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        return perfilService.contarSeguidos(perfilLogueado.getUsuario().getId());
+    }
+
+    @GetMapping("/seguidoresPerfil")
+    public int contarSeguidoresPerfil(@RequestHeader("Authorization") String token) {
+        Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        return perfilService.contarSeguidores(perfilLogueado.getUsuario().getId());
+    }
+
+    @DeleteMapping("/eliminarPublicacion/{idPublicacion}")
+    public void eliminarPublicacion(@RequestHeader("Authorization") String token, @PathVariable Integer idPublicacion) {
+        Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        publicacionService.eliminarPublicacion(perfilLogueado, idPublicacion);
+    }
+
+    @GetMapping("/baneado")
+    public boolean isUsuarioBaneado(@RequestHeader("Authorization") String token) {
+        Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        return perfilService.isUsuarioBaneado(perfilLogueado.getId());
     }
 
     @GetMapping("/isAdmin")

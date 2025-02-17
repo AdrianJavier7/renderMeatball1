@@ -4,6 +4,7 @@ import org.example.meatballbackend.Dto.PerfilDTO;
 import org.example.meatballbackend.Entidades.Perfil;
 import org.example.meatballbackend.Entidades.Usuario;
 import org.example.meatballbackend.Enums.Estado;
+import org.example.meatballbackend.Enums.Estado;
 import org.example.meatballbackend.Enums.Rol;
 import org.example.meatballbackend.Repositorios.PerfilRepository;
 import org.example.meatballbackend.Repositorios.UsuarioRepository;
@@ -52,7 +53,6 @@ public class PerfilService implements IPerfilService {
             dto.setFotoPerfilLink(p.getFotoPerfilLink());
             dto.setEmail(p.getEmail());
             dto.setTelefono(p.getTelefono());
-            dto.setEstado(String.valueOf(p.getEstado()));
             perfilDTOS.add(dto);
         }
 
@@ -84,7 +84,6 @@ public class PerfilService implements IPerfilService {
         dto.setFotoPerfilLink(perfil.getFotoPerfilLink());
         dto.setEmail(perfil.getEmail());
         dto.setTelefono(perfil.getTelefono());
-        dto.setEstado(String.valueOf(perfil.getEstado()));
         dto.setUsername(perfil.getUsername());
         dto.setId(perfil.getId());
         return dto;
@@ -118,4 +117,20 @@ public class PerfilService implements IPerfilService {
         return miPerfilDTO(perfil);
     }
 
+
+    public int contarSeguidos(int usuarioId) {
+        Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
+        Usuario usuario = usuarioOpt.orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        return usuario.getSeguidos().size();
+    }
+
+    public int contarSeguidores(Integer usuarioId) {
+        return usuarioRepository.contarTotalSeguidores(usuarioId);
+    }
+
+    public boolean isUsuarioBaneado(Integer perfilId) {
+        Perfil perfil = perfilRepository.findById(perfilId).orElseThrow();
+        Estado estado = Estado.valueOf(perfil.getEstado());
+        return Estado.Baneado.equals(estado);
+    }
 }

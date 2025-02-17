@@ -61,8 +61,9 @@ public class PerfilController {
         return publiconService.getPublicacionesPorUsuarioId(idUsuario);
     }
 
-    @GetMapping("/baneado/{id}")
-    public boolean isUsuarioBaneado(@PathVariable Integer id) {
-        return perfilService.isUsuarioBaneado(id);
+    @GetMapping("/baneado")
+    public boolean isUsuarioBaneado(@RequestHeader("Authorization") String token) {
+        Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        return perfilService.isUsuarioBaneado(perfilLogueado.getId());
     }
 }

@@ -500,6 +500,7 @@ public class PublicacionService implements IPublicacionService {
         dto.setTiempoPreparacion(publicacion.getTiempoPreparacion());
         dto.setTiempoCoccion(publicacion.getTiempoCoccion());
         dto.setRaciones(publicacion.getRaciones());
+        dto.setEstado(publicacion.getEstado());
         dto.setUsuarioId(publicacion.getUsuario().getId());
         dto.setUsername(publicacion.getUsuario().getUsername());
 

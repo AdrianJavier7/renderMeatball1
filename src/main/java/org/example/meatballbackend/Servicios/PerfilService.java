@@ -53,6 +53,7 @@ public class PerfilService implements IPerfilService {
             dto.setApellidos(p.getApellidos());
             dto.setFotoPerfilLink(p.getFotoPerfilLink());
             dto.setEmail(p.getEmail());
+            dto.setEstado(p.getEstado());
             dto.setTelefono(p.getTelefono());
             perfilDTOS.add(dto);
         }

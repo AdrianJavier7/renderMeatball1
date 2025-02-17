@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PerfilService implements IPerfilService {
@@ -130,7 +131,7 @@ public class PerfilService implements IPerfilService {
 
     public boolean isUsuarioBaneado(Integer perfilId) {
         Perfil perfil = perfilRepository.findById(perfilId).orElseThrow();
-        Estado estado = Estado.valueOf(perfil.getEstado());
+        Estado estado = perfil.getEstado();
         return Estado.Baneado.equals(estado);
     }
 }

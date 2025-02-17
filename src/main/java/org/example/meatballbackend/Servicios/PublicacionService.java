@@ -1,5 +1,6 @@
 package org.example.meatballbackend.Servicios;
 
+import jakarta.transaction.Transactional;
 import org.example.meatballbackend.Dto.*;
 import org.example.meatballbackend.Entidades.Comentario;
 import org.example.meatballbackend.Entidades.Perfil;
@@ -548,5 +549,11 @@ public class PublicacionService implements IPublicacionService {
         }
 
         publicacionRepository.delete(publicacion);
+    }
+
+    @Transactional
+    public void eliminarComentariosPorPublicacion(Integer idPublicacion) {
+        // Logic to delete comments associated with the publication
+        comentarioRepository.deleteByPublicacionId(idPublicacion);
     }
 }

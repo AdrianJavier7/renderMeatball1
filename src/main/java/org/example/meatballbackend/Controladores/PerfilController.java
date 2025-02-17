@@ -85,6 +85,7 @@ public class PerfilController {
     @DeleteMapping("/eliminarPublicacion/{idPublicacion}")
     public void eliminarPublicacion(@RequestHeader("Authorization") String token, @PathVariable Integer idPublicacion) {
         Perfil perfilLogueado = jwtService.extraerPerfilToken(token);
+        publicacionService.eliminarComentariosPorPublicacion(idPublicacion);
         publicacionService.eliminarPublicacion(perfilLogueado, idPublicacion);
     }
 

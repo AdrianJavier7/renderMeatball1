@@ -266,4 +266,18 @@ public class PublicacionService implements IPublicacionService {
         return convertirAListaDTO(publicacionesAleatorias);
     }
 
+    public void eliminarPublicacion(Perfil perfil, Integer publicacionId) {
+        Publicacion publicacion = publicacionRepository.findById(publicacionId)
+                .orElseThrow(() -> new RuntimeException("Publicación no encontrada"));
+
+        if (publicacion.getUsuario() == null) {
+            throw new RuntimeException("La publicación no tiene un perfil asociado");
+        }
+
+        if (!publicacion.getUsuario().getId().equals(perfil.getUsuario().getId())) {
+            throw new RuntimeException("No tienes permiso para eliminar esta publicación");
+        }
+
+        publicacionRepository.delete(publicacion);
+    }
 }

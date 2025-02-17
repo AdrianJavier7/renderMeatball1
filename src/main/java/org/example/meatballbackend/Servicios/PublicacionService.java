@@ -185,6 +185,15 @@ public class PublicacionService implements IPublicacionService {
             dto.setId(p.getId());
             dto.setUsuarioId(p.getUsuario().getId());
             dto.setUsername(p.getUsuario().getUsername());
+            dto.setTitulo(p.getTitulo());
+            dto.setDescripcion(p.getDescripcion());
+            dto.setImagenLink(p.getImagenLink());
+            dto.setReceta(p.getReceta());
+            dto.setDificultad(p.getDificultad());
+            dto.setTiempoPreparacion(p.getTiempoPreparacion());
+            dto.setTiempoCoccion(p.getTiempoCoccion());
+            dto.setRaciones(p.getRaciones());
+            dto.setEstado(p.getEstado());
 
             Perfil perfil = p.getPerfil();
             if (perfil != null) {

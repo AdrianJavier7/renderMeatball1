@@ -60,4 +60,9 @@ public class PerfilController {
     public List<PublicacionDTO> getPublicacionesPorUsuarioId(@PathVariable Integer idUsuario) {
         return publiconService.getPublicacionesPorUsuarioId(idUsuario);
     }
+
+    @GetMapping("/baneado/{id}")
+    public boolean isUsuarioBaneado(@PathVariable Integer id) {
+        return perfilService.isUsuarioBaneado(id);
+    }
 }

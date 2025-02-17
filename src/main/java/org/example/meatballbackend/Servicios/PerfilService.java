@@ -3,6 +3,7 @@ package org.example.meatballbackend.Servicios;
 import org.example.meatballbackend.Dto.PerfilDTO;
 import org.example.meatballbackend.Entidades.Perfil;
 import org.example.meatballbackend.Entidades.Usuario;
+import org.example.meatballbackend.Enums.Estado;
 import org.example.meatballbackend.Repositorios.PerfilRepository;
 import org.example.meatballbackend.Repositorios.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,5 +85,11 @@ public class PerfilService implements IPerfilService {
         dto.setUsername(perfil.getUsername());
         dto.setId(perfil.getId());
         return dto;
+    }
+
+    public boolean isUsuarioBaneado(Integer perfilId) {
+        Perfil perfil = perfilRepository.findById(perfilId).orElseThrow();
+        Estado estado = Estado.valueOf(perfil.getEstado());
+        return Estado.Baneado.equals(estado);
     }
 }

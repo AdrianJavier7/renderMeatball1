@@ -21,6 +21,7 @@ public class PublicacionDTO {
     private Dificultad dificultad;
     private int tiempoPreparacion;
     private int tiempoCoccion;
+    private Estado estado;
     private int raciones;
     private Integer usuarioId;
     private Integer perfilId;

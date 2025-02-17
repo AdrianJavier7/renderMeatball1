@@ -48,6 +48,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
 
             Usuario usuario = (Usuario) usuarioService.loadUserByUsername(tokenDataDTO.getUsername());
+            System.out.println("Usuario encontrado: " + usuario.getUsername() + " con roles: " + usuario.getAuthorities());
 
             if (usuario != null && !jwtService.isExpired(token)) {
                 System.out.println("Usuario autenticado: " + usuario.getUsername());

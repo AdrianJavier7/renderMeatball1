@@ -56,7 +56,7 @@ public class UsuarioService implements UserDetailsService {
         Perfil perfil = new Perfil();
         perfil.setUsername(dto.getUsername());
         perfil.setEmail(dto.getEmail());
-        perfil.setEstado(String.valueOf(Estado.Activo));
+        perfil.setEstado(Estado.Activo);
 
         Usuario usuarioGuardado = usuarioRepository.save(nuevoUsuario);
 

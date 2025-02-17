@@ -6,7 +6,6 @@ import org.example.meatballbackend.Dto.ComentarioRecibidoDTO;
 import org.example.meatballbackend.Dto.PublicacionDTO;
 import org.example.meatballbackend.Entidades.Comentario;
 import org.example.meatballbackend.Entidades.Perfil;
-import org.example.meatballbackend.Entidades.Publicacion;
 import org.example.meatballbackend.Security.JWTService;
 import org.example.meatballbackend.Servicios.PublicacionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +64,24 @@ public class PublicacionController {
     @GetMapping("/comentarios")
     public List<ComentarioDTO> getComentarios(@RequestParam int idPublicacion, @RequestHeader("Authorization") String token){
         return publicacionService.getComentarios(idPublicacion);
+    }
+
+    @PostMapping("/setActiva/{idPublicacion}")
+    public void setActiva(@PathVariable int idPublicacion, @RequestHeader("Authorization") String token) {
+        Perfil perfiLogueado = jwtService.extraerPerfilToken(token);
+        publicacionService.setActivo(idPublicacion);
+    }
+
+    @PostMapping("/setBaneada/{idPublicacion}")
+    public void setBaneada(@PathVariable int idPublicacion, @RequestHeader("Authorization") String token) {
+        Perfil perfiLogueado = jwtService.extraerPerfilToken(token);
+        publicacionService.setBaneado(idPublicacion);
+    }
+
+    @PostMapping("setPendiente/{idPublicacion}")
+    public void setPendiente(@PathVariable int idPublicacion, @RequestHeader("Authorization") String token) {
+        Perfil perfiLogueado = jwtService.extraerPerfilToken(token);
+        publicacionService.setPendienteRevision(idPublicacion);
     }
 
     @GetMapping("/seguidos")

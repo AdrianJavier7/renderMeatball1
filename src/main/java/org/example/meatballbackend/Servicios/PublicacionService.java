@@ -6,6 +6,7 @@ import org.example.meatballbackend.Entidades.Perfil;
 import org.example.meatballbackend.Entidades.Publicacion;
 import org.example.meatballbackend.Entidades.Usuario;
 import org.example.meatballbackend.Entidades.*;
+import org.example.meatballbackend.Enums.Estado;
 import org.example.meatballbackend.Enums.Rol;
 import org.example.meatballbackend.Repositorios.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,7 +142,6 @@ public class PublicacionService implements IPublicacionService {
         List<Publicacion> publicaciones = publicacionRepository.findAllExceptByUsuario(perfil.getUsuario());
         List<PublicacionDTO> publicacionDTOList = new ArrayList<>();
 
-
         for (Publicacion publicacion : publicaciones) {
             PublicacionDTO publicacionDTO = new PublicacionDTO();
             publicacionDTO.setId(publicacion.getId());
@@ -152,6 +152,7 @@ public class PublicacionService implements IPublicacionService {
             publicacionDTO.setDificultad(publicacion.getDificultad());
             publicacionDTO.setTiempoPreparacion(publicacion.getTiempoPreparacion());
             publicacionDTO.setTiempoCoccion(publicacion.getTiempoCoccion());
+            publicacionDTO.setEstado(publicacion.getEstado());
             publicacionDTO.setRaciones(publicacion.getRaciones());
             publicacionDTO.setUsuarioId(publicacion.getUsuario().getId());
             publicacionDTO.setUsername(publicacion.getUsuario().getUsername());
@@ -211,6 +212,7 @@ public class PublicacionService implements IPublicacionService {
             publicacionDTO.setDificultad(publicacion.getDificultad());
             publicacionDTO.setTiempoPreparacion(publicacion.getTiempoPreparacion());
             publicacionDTO.setTiempoCoccion(publicacion.getTiempoCoccion());
+            publicacionDTO.setEstado(publicacion.getEstado());
             publicacionDTO.setRaciones(publicacion.getRaciones());
             publicacionDTO.setUsuarioId(publicacion.getUsuario().getId());
             publicacionDTO.setUsername(publicacion.getUsuario().getUsername());
@@ -339,6 +341,7 @@ public class PublicacionService implements IPublicacionService {
             dto.setDescripcion(p.getDescripcion());
             dto.setReceta(p.getReceta());
             dto.setDificultad(p.getDificultad());
+            dto.setEstado(p.getEstado());
             dto.setTiempoPreparacion(p.getTiempoPreparacion());
             dto.setTiempoCoccion(p.getTiempoCoccion());
             dto.setRaciones(p.getRaciones());
@@ -346,6 +349,47 @@ public class PublicacionService implements IPublicacionService {
         }
 
         return publicacionDTOS;
+    }
+
+    public PublicacionDTO miPublicacionDTO(Publicacion publicacion){
+        PublicacionDTO dto = new PublicacionDTO();
+        dto.setId(publicacion.getId());
+        dto.setTitulo(publicacion.getTitulo());
+        dto.setImagenLink(publicacion.getImagenLink());
+        dto.setDescripcion(publicacion.getDescripcion());
+        dto.setReceta(publicacion.getReceta());
+        dto.setDificultad(publicacion.getDificultad());
+        dto.setTiempoPreparacion(publicacion.getTiempoPreparacion());
+        dto.setTiempoCoccion(publicacion.getTiempoCoccion());
+        dto.setRaciones(publicacion.getRaciones());
+        dto.setEstado(publicacion.getEstado());
+        dto.setUsuarioId(publicacion.getUsuario().getId());
+        dto.setUsername(publicacion.getUsuario().getUsername());
+        return dto;
+    }
+
+    public PublicacionDTO setActivo(Integer id){
+        Publicacion publicacion = publicacionRepository.findById(id).orElseThrow();
+        publicacion.setEstado(Estado.Activo);
+        publicacion.getUsuario().setEstado(Estado.Activo);
+        publicacionRepository.save(publicacion);
+        return miPublicacionDTO(publicacion);
+    }
+
+    public PublicacionDTO setBaneado(Integer id){
+        Publicacion publicacion = publicacionRepository.findById(id).orElseThrow();
+        publicacion.setEstado(Estado.Baneado);
+        publicacion.getUsuario().setEstado(Estado.Baneado);
+        publicacionRepository.save(publicacion);
+        return miPublicacionDTO(publicacion);
+    }
+
+    public PublicacionDTO setPendienteRevision(Integer id){
+        Publicacion publicacion = publicacionRepository.findById(id).orElseThrow();
+        publicacion.setEstado(Estado.Pendiente_revision);
+        publicacion.getUsuario().setEstado(Estado.Pendiente_revision);
+        publicacionRepository.save(publicacion);
+        return miPublicacionDTO(publicacion);
     }
 
     public List<PublicacionDTO> getPublicacionesDeSeguidos(Integer usuarioId) {

@@ -34,15 +34,25 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors -> {
+                    CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.addAllowedOrigin("https://frontendmeatball.onrender.com"); // Añade la URL específica
+                    configuration.addAllowedOriginPattern("*"); // Permite cualquier otro origen
+                    configuration.addAllowedMethod("*"); // Permite todos los métodos (GET, POST, etc.)
+                    configuration.addAllowedHeader("*"); // Permite todos los headers
+                    configuration.setAllowCredentials(true); // Permite enviar cookies o credenciales
+
+                    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                    source.registerCorsConfiguration("/**", configuration);
+                    cors.configurationSource(source);
+                })
                 .authorizeHttpRequests(req -> req.requestMatchers("/auth/**", "/error").permitAll()
                         .requestMatchers("/perfil/**").hasAnyAuthority("Perfil", "Admin")
                         .requestMatchers("/publicacion/**").hasAnyAuthority("Perfil", "Admin")
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtFilterChain, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling((exception) -> exception.accessDeniedHandler(accessDeniedHandler()))
-        ;
+                .exceptionHandling((exception) -> exception.accessDeniedHandler(accessDeniedHandler()));
 
         return http.build();
     }

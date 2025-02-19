@@ -1,5 +1,5 @@
 # Usa una imagen oficial de OpenJDK con Maven
-FROM amazoncorretto:21-alpine-jdk
+FROM amazoncorretto:17-alpine-jdk
 
 # Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
